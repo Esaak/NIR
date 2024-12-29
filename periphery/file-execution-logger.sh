@@ -56,7 +56,7 @@ do
     echo "File: $new_filename" >> "$log_file"
     
     # Run the executable with the numbered file
-    mpirun -np 8 $executable -arch gpu >> "$log_file" 2>&1
+    mpirun -np 4 $executable -arch gpu & >> "$log_file" 2>&1
 
     
     # Log the exit status
