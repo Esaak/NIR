@@ -1,0 +1,1101 @@
+MAIN_DIR = "";
+
+# sometimes you have to set main directory, e.g. on Lengau working in Lustre:
+# MAIN_DIR = "/mnt/lustre/users/my_account/build/";
+
+domain
+{
+#
+# domain setup in [meters]
+#   x - streamwise, y - spanwise, z - wall-normal directions
+#
+	x = 0.0; y = 0.0; z = 0.0;				# point of origin
+	length = 2000.0; width = 2000.0; height = 1000.0;	# domain length(x), width(y) and height(z)
+}
+# -----------------------------------------------------------------------------
+
+time
+{
+	begin = 0.0; 
+	end = 1.0 * 3600.0;	# start and end time of integration [s]
+
+	dt = 0.1;		# time step [s]
+
+	# use_calendar = false;		# optional, default = false
+	calendar 
+	{
+		mode = "local";	
+		# mode = "local" - local time
+		# mode = "local-UTC" - local UTC time
+		# mode = "set" - prescribed time & date as 
+		#		[year, month, day, hour, min, sec, UTC_offset] values
+
+		year = 2020;
+		month = 9;
+		day = 1;
+		hour = 12;
+		min = 0;
+		sec = 0.0;
+		UTC_offset = 3;
+	}
+}
+# -----------------------------------------------------------------------------
+
+grid
+{
+	type = "uniform";		# grid type = "uniform" ||
+					# "stretched" || "stretched-up" || "stretched-down" ||
+					# "z-coord-ascii"
+
+	cx = 128; cy = 128; cz = 64;	# number of cells in each direction
+	ksi_z = 1.2;			# near-wall grid stretching parameter
+
+	adaptive {
+		# mode = false;		# enable adaptive grid [optional, default = false]
+
+		beta = 0.3;		# relaxation time scale [<= 1]
+
+		dz_min = 0.25 * (domain.height / grid.cz);	# min grid step
+		dz_max = 4.0 * (domain.height / grid.cz);	# max grid step
+
+		# --- adaptation parameters
+		TKE_threshold_coeff = 0.1;	# threshold coeff. to define hbl
+		hbl_max_coeff = 1.1;		# boundary layer height multiplier
+		C_smooth_coeff = 5.0;		# number of cells in smoothing region
+
+		# --- begin & end time of adaptation [optional, default: all integration period]
+		# begin = time.begin; end = time.end;
+
+		nskip = 1;		# adaptation once in nskip iterations, each iteration := 1
+	}
+}
+# -----------------------------------------------------------------------------
+
+mpi_setup
+{
+#
+# MPI-process distribution
+#   in 'mpirun -np [N]' [N] overrides config specs if differs
+#
+	dimx = 2; dimy = 2; dimz = 1;
+}
+# -----------------------------------------------------------------------------
+
+phys
+{
+	f = 6.973 * 0.00001;			# coriolis frequency [1/s]
+
+	nu = 1.25 * 0.00001;			# kinematic viscosity [m^2/s]
+	xi = (1.0 / 0.7) * nu;			# thermal diffusivity [m^2/s]
+
+	rho_ref = 1.25;				# reference density of air [kg/m^3]
+
+	g = 9.81;				# gravitational acceleration [m/s^2]
+	Theta_ref = 241.0;			# reference temperature [K]
+
+	beta = g / Theta_ref;			# g * thermal expansion coefficient [m/(K*s^2)]
+}
+# -----------------------------------------------------------------------------
+
+# optinally define state variables
+#  default defs. depend on model configuration 
+state_def
+{
+	# Theta_p = false;
+	# Tabs = false; 
+
+	# Rho = false;
+	# Rho_ideal = false;
+
+	# Exner_pz = false;
+	# Pressure_ref_pz = false;
+
+	# Qliquid = false;
+	# Qsolid = false;
+	# Qvapor = false;
+
+	# Qvs_water = false; Pvs_water = false;
+	# Qvs_ice = false; Pvs_ice = false;
+}
+# -----------------------------------------------------------------------------
+
+geo_wind
+{
+# NOTE: skipped if mode not set
+# 	forcing priority: [t,z], [t], [const]
+
+	# --- geostrophic wind components
+	U = 7.5; V = 0.0;			# [m/s]
+}
+# -----------------------------------------------------------------------------
+
+external_pressure_grad
+{
+# NOTE: skipped if mode not set
+# 	forcing priority: [t,z], [t], [const]
+
+	# --- pressure gradient components [optional]
+	# dPdx = - 0.00025;			# [Pa/m]
+	# dPdy = 0.0; 				# [Pa/m]
+}
+# -----------------------------------------------------------------------------
+
+subsidence 
+{
+# NOTE: skipped if mode not set
+
+	is_momentum_eq = false;
+	is_scalar_eq = false;
+
+	# --- active in [begin, end]
+	begin = 0.5 * 3600.0;
+	end = time.end;
+
+	# --- [t,z] forcing in: [m/s], [s], [m]
+	W_pz {
+		# --- linear profile capped by 'value' at z = height
+		mode = "bl-profile";
+
+		value = -0.001;		# min subsidence velocity [m/s] 
+		height = 100.0;		# boundary layer height [m]
+	}
+}
+# -----------------------------------------------------------------------------
+
+external_tendency
+{
+}
+# -----------------------------------------------------------------------------
+
+nudging
+{
+}
+# -----------------------------------------------------------------------------
+
+rayleigh_friction
+{
+}
+# -----------------------------------------------------------------------------
+
+surface
+{
+	# --- define surface type, default = 'generic' (|| 'land' || 'water')
+	# type = "generic";
+
+	# --- use local || average profile in dynamic roughness calculation, default = false
+	# is_dynamic_roughness_avgxy = false;
+
+	sensible_hflux {
+		mode = "const";
+
+		value = -0.35;	# sensible heat flux [K*m/s]
+	}
+
+	latent_hflux = 0.0;	# latent heat flux [K*m/s]
+
+	z0_m = 0.1;		# aerodynamic roughness [m]
+
+	kappa = 0.4;		# von Karman constant
+	Pr_t_0 = 1.0;		# turbulent Prandt number (neutral)
+
+	# --- stability function coefficients
+	Cm = 4.8;
+	Ch = 7.8;
+
+	alpha_m = 16.0;
+	alpha_h = 16.0;
+
+	# --- latent heat flux alpha/beta model
+	lhflux_alpha = 1.0;
+	lhflux_beta = 0.025;
+}
+# -----------------------------------------------------------------------------
+
+initial_conditions
+{
+	# optional [U], [V]
+	# 	if not set initial profiles are set to match geostrophic wind
+
+	Theta { 
+		# --- predefined mode
+		mode = "mixed-layer";
+
+		surface_value = 241.0;	# initial boundary layer temperature [K]
+		height = 250.0;		# boundary layer height [m]
+		grad_z = 0.03;		# temperature gradient above boundary layer [K/m]
+
+		# --- initial theta noise in [z1, z2]
+		noise_variance = 0.001;
+		noise_z1 = domain.z;
+		noise_z2 = domain.z + 0.5 * height;
+
+		noise_seed = 20;
+	}
+
+	Qhum { 
+		# --- predefined mode
+		mode = "mixed-layer";
+
+		surface_value = 0.0025;	# initial boundary layer humidity [kg/kg]
+		height = 0.0;		# boundary layer height [m]
+		grad_z = 0.0;		# humidity gradient above boundary layer [kg/(kg*m)]
+	}
+}
+# -----------------------------------------------------------------------------
+
+damping
+{
+	is_enabled = true;
+
+	# use_avgxy_ref = false;		# damp to -xy average profile [optional]
+
+	f = 0.2;				# damping frequency [1/s], = 0.2 (WRF model)
+
+	# --- damping layer [z1, z2]
+	z1 = domain.z + 0.8 * domain.height;	# [m]
+	z2 = domain.z + domain.height;		# [m]
+}
+# -----------------------------------------------------------------------------
+
+les
+{
+	is_dynamic_momentum = true;
+	is_dynamic_scalar = true;
+
+	is_ssm_mixed_momentum = false;
+	is_ssm_mixed_scalar = false;
+
+	is_amd_model = false;		# use AMD subgrid model 
+					# dynamic, ssm keys not supported, have to be := false
+
+
+	# --- SSM model params
+	C_ssm_momentum = 1.0;
+	C_ssm_scalar = 1.0;
+
+
+	# --- static LES model params
+	C_smag = 0.08;			# GABLS-1 fit = 0.08
+					# Lilly = 0.17
+	Prandtl_sgs = 0.7;		# subgrid scale Prandtl [0.4, 1.0]	
+
+
+	# --- dynamic LES model params
+	dynamic {
+		# --- dynamic coefficient = (C_{s} * delta_{g})^2 clipping
+		C_smag_max = 0.25;
+		Prandtl_sgs_min = 0.3;
+
+		alpha = 1.73;		# test-to-base filter width ratio
+
+		avg_mode = "lagrange";	# "none", "plane", "filter", "lagrange"
+
+		nskip = 3;
+		use_transport = false;
+
+		C_T_lagrange_momentum = 1.5;
+		C_T_lagrange_scalar = 3.0;
+	}
+
+	base_filter_reset = false;
+	test_filter_reset = false;
+	clip_filter_reset = false;	
+}
+# -----------------------------------------------------------------------------
+
+numerics 
+{
+	Theta {
+		# adv_scheme = "skew-x2";	# optional: "adv-x2", "div-x2", "skew-x2" (default),
+						#	"upwind", "upwind-x3",
+						#	"lax-wendroff", "lax-wendroff-flim"
+
+		# time_scheme = "adams-bashforth-x3";	# optional: "euler",
+							#	"adams-bashforth-x2", "adams-bashforth-x3" (default)
+	}
+	Qhum {
+		# adv_scheme = "skew-x2";	# optional: "adv-x2", "div-x2", "skew-x2" (default),
+						#	"upwind", "upwind-x3",
+						#	"lax-wendroff", "lax-wendroff-flim"
+
+		# time_scheme = "adams-bashforth-x3";	# optional: "euler",
+							#	"adams-bashforth-x2", "adams-bashforth-x3" (default)
+	}
+}
+# -----------------------------------------------------------------------------
+
+passive_tracers
+{
+	num = 1;	# number of tracers, skipped if not defined
+
+	# --- each tracer field defines diffusivity & surface values
+
+}
+# -----------------------------------------------------------------------------
+
+# particle simulation setup
+#  used only if INCLUDE_PARTICLES is defined, see [model-defines.h]
+ptcl
+{
+	is_passive_transport = true;		# passive particles flag
+	
+	# --- particle parameters for all sources
+	density = 100.0;			# particle density [kg/m^3]
+	diameter = 0.00001;			# particle diameter [m]
+
+	g = 0.0;				# gravity acceleration [m/s^2]
+
+	# f_decay = 1.0 / 100.0;		# optional decay constant [1/s]
+						# half-life = ln(2) / f
+
+	# subgrid_model = "none";		# optional = "none" (default) || "rdm"
+
+	# --- number of sources
+	nsources = 1;
+
+	source_1
+	{
+		n = (grid.cx * grid.cy * grid.cz) / 8;	# number of particles to release
+		begin = 0.8 * 3600.0;			# release time
+		end = 0.9 * 3600.0;			# instant release if not defined
+
+		# --- setting flux [lower priority than 'n' -- number of particles]
+		#	both begin & end must be specified -- not instant source
+		# flux = 100.0;
+		# flux_direction = "Z";
+
+		# --- source volume
+		xmin = domain.x + 0.4 * domain.length; xmax = domain.x + 0.6 * domain.length;
+		ymin = domain.y + 0.4 * domain.width; ymax = domain.y + 0.6 * domain.width;
+		zmin = domain.z; zmax = domain.z + 0.1 * domain.height;
+	}
+
+	# --- number of sinks [optional]
+	nsinks = 0;
+	
+	sink_1 {
+		# --- optional, default mode = "inside"
+		mode = "inside"; # || "outside"
+
+		# --- define volume
+		xmin = domain.x; xmax = domain.x + domain.length;
+		ymin = domain.y; ymax = domain.y + domain.width;
+		zmin = domain.z + 0.5 * domain.height; 
+		zmax = domain.z + domain.height;		
+	}
+}
+# -----------------------------------------------------------------------------
+
+# particle tracking setup
+#  used only if INCLUDE_PARTICLES_TRACKING is defined, see [model-defines.h]
+ptcl_track
+{
+	is_passive_transport = ptcl.is_passive_transport;
+	
+	# --- particle parameters for all sources
+	density = ptcl.density;		# particle density [kg/m^3]
+	diameter = ptcl.diameter;	# particle diameter [m]
+
+	g = ptcl.g;			# gravity acceleration [m/s^2]
+
+	# f_decay = ptcl.f_decay;		# optional decay constant [1/s]
+						# half-life = ln(2) / f
+
+	group_max_size = 256;			# max number of particles per group
+	max_memory = 10 * 1024 * 1024;		# max memory in bytes for keeping trajectories in memory
+
+	# --- number of sources
+	nsources = 1;
+
+	source_1
+	{
+		n = 128;		# number of particles to release
+		begin = 0.9 * 3600.0;	# release time
+
+		# --- setting flux [lower priority than 'n' -- number of particles]
+		#	both begin & end must be specified -- not instant source
+		# flux = 100.0;
+		# flux_direction = "Z";
+
+		# --- source volume
+		xmin = domain.x + 0.4 * domain.length; xmax = domain.x + 0.6 * domain.length;
+		ymin = domain.y + 0.4 * domain.width; ymax = domain.y + 0.6 * domain.width;
+		zmin = domain.z; zmax = domain.z + 0.1 * domain.height;
+	}
+
+	# --- number of sinks [optional]
+	nsinks = 0;		
+}
+# -----------------------------------------------------------------------------
+
+# canopy setup
+#  used only if INCLUDE_CANOPY_DRAG is defined, see [model-defines.h]
+canopy
+{
+	Cd = 0.15;
+	drag_type = "non-linear"; # || "linearized" || "mean"
+
+	num = 0;
+	patch_1 { 
+		type = "sharp"; # || "fancy" || "obs"
+
+		# --- patch volume
+		xmin = domain.x; xmax = domain.x + domain.length;
+		ymin = domain.y; ymax = domain.y + domain.width;
+		zmin = domain.z; zmax = domain.z + 50.0;
+
+		# --- make patch 'periodic' in -x and/or -y directions
+		#	single patch if not defined
+		# xperiod = 1.0;
+		# yperiod = 1.0;
+
+		LAI = 1.0;
+		# --- set zm - height of max(LAD) for type = "obs":
+		# zm = zmin + 0.8 * (zmax - zmin);
+
+		# --- OR: set a file
+		# type = "sharp-map";
+		# filename = "map-ex.txt";
+
+		# switch_ij_order = false;	# [optional, default = false]
+		# normalize_height = 1.0;	# [optional, default = 1.0]
+
+		# --- OR: set profile
+		# type = "profile";
+		# filename = "LAD.txt";
+
+		# normalize_coord = 1.0;	# [optional, default = 1.0]
+		# normalize_value = 1.0;	# [optional, default = 1.0]
+	}
+}
+# -----------------------------------------------------------------------------
+
+poisson
+{
+#
+# Poisson equation solver setup
+#
+	# use_cg_solver = false;		# use CG as base solver [optional, default = BiCGstab]
+
+	retol = 0.0001; abstol = 0.00001;	# relative and absolute tolerance
+	miniters = 1; maxiters = 100;		# minimum and maximum number of iterations
+
+	piters = 1;				# number of preconditioner (multigrid) iterations
+
+	multigrid 
+	{
+		ngrid = 6;			# number of grids in multigrid sequence (= [0] - auto definition)
+
+		down_iters = 2;			# number of smoother iterations on fine->coarse traverse
+		up_iters = 3;			# number of smoother iterations on coarse->fine traverse
+		direct_iters = 5;		# number of smoother iterations on coarsest grid
+
+		smooth_up_omega = 1.84;		# relaxation value on coarse->fine traverse
+		smooth_up_omega_fine = 1.64;	# relaxation value on reaching finest grid
+	}
+}
+# -----------------------------------------------------------------------------
+
+output 
+{
+# NOTE: netcdf output is enabled only if INCLUDE_NETCDF is defined in [nse-sys.h]
+
+	DIR = MAIN_DIR + "output/";		# output directory
+	make_unique_DIR = true;		# make output directory unique for each run
+
+	convert_dsq_to_tecplot = true;		# convert series .dsq output to .plt [tecplot] format
+						#	*: on model completion only
+	# convert_dsq_to_netcdf = false;	# convert series .dsq output to .nc [netcdf] format
+						#	*: on model completion only
+
+	num = 1;			# number of output units
+
+	unit_1
+	{
+		SUBDIR = "";
+
+		mark = time.end;
+
+		# --- output subdomain [optional, applicable in 3D output only]		
+		xmin = domain.x; xmax = domain.x + domain.length;	# -x output domain setup
+		ymin = domain.y; ymax = domain.y + domain.width;	# -y output domain setup
+		zmin = domain.z; zmax = domain.z + domain.height;	# -z output domain setup
+
+		# --- output controls [default, if not defined, value is 'false']
+		cntrl_avgxy_plt = false;		# 1D -xy averaged .plt fields
+		cntrl_avgxy_netcdf = false;		# 1D -xy averaged netcdf fields
+
+		cntrl_3d_plt = false;			# 3D .plt fields
+		cntrl_3d_bin = false;			# 3D .nsx fields
+		cntrl_3d_netcdf = false;		# 3D netcdf fields
+
+		cntrl_geometry_3d_plt = false;		# geometry 3D .plt fields
+		cntrl_geometry_3d_netcdf = false;	# geometry 3D netcdf fields
+
+		cntrl_2d_plt = false;			# 2D .plt fields
+		cntrl_2d_netcdf = false;		# 2D netcdf fields
+
+		cntrl_surface_plt = false;		# surface .plt fields
+		cntrl_surface_netcdf = false;		# surface netcdf fields
+
+		cntrl_grid_plt = false;			# grid .plt data
+		cntrl_grid_netcdf = false;		# grid netcdf data
+
+		cntrl_meteo_avgxy_plt = false;		# 1D -xy averaged meteo forcing .plt fields
+		cntrl_meteo_all_plt = false;		# all meteo forcing .plt fields
+
+		# ... add control keys, profiles or slices ...
+	}
+
+	screen {
+		begin = time.begin;	# start time [s] of onscreen output
+
+		# nskip = 360;		# output once in nskip iterations, each iteration := 1
+		dt = 0.05 * 3600.0;	# output time step [s], --higher-- priority than 'nskip'
+
+		# --- screen controls [optional, default = true]
+		# cntrl_status = true;
+		# cntrl_progress_bar = true;
+		
+		# --- screen controls [optional, default = false]
+		# cntrl_terminal_mode = false;
+	}
+}
+# -----------------------------------------------------------------------------
+
+checkup
+{
+	# --- additional checkups [InF, NaN values etc.]
+	begin = 0.0;		# start time of checks
+
+	nskip = 3600;		# check once in nskip iterations, each iteration := 1
+	# dt = 1.0 * 3600.0;	# check time step, --higher-- priority than 'nskip'
+}
+# -----------------------------------------------------------------------------
+
+dump 
+{
+	DIR = MAIN_DIR + "dump/";	# dump directory
+
+	begin = 0.5 * 3600.0;		# start time [s] for writing model dump
+	dt = 0.5 * 3600.0;		# time step [s] for writing model dump
+}
+# -----------------------------------------------------------------------------
+
+startup
+{
+	DIR = MAIN_DIR + "init/";	# initial conditions directory
+}
+# -----------------------------------------------------------------------------
+
+series
+{
+	begin = 60.0;		# start time [s]
+
+	# nskip = 2;		# calculate once in nskip iterations, each iteration := 1
+	dt = 1.0;		# time step [s], --higher-- priority than 'nskip'
+
+	# --- point flow measurements
+	point_set
+	{
+		# mode = "define"; 	# optional point set mode
+					#  = "define" [default] || "grid-xy" 
+
+		# np = 3;	# number of points, skipped if not defined
+		point_1 { x = domain.x + 0.5 * domain.length; y = domain.y + 0.5 * domain.width; z = 50.0; }
+		point_2 { x = domain.x + 0.5 * domain.length; y = domain.y + 0.5 * domain.width; z = 100.0; }
+		point_3 { x = domain.x + 0.5 * domain.length; y = domain.y + 0.5 * domain.width; z = 200.0; }
+
+		# --- OR: set point set grid on z=const planes
+		# mode = "grid-xy";
+
+		# --- domain
+		# x = domain.x; y = domain.y;
+		# length = domain.length; width = domain.width;
+
+		# --- grid dimensions, number of edges
+		# nx = 7; ny = 5;
+		# --- number of z=const planes
+		# nz = 3;
+		# z_1 = 50.0;
+		# z_2 = 100.0;
+		# z_3 = 200.0;
+	}
+
+	# --- [xy] averaged energy at fixed 'z'
+	energy_avgxy_set
+	{
+		# np = 2;	# number of z planes, skipped if not defined
+		z_1 = 100.0; 
+		z_2 = 200.0;
+	}
+
+	# --- [xy] averaged fluxes at fixed 'z'
+	flux_avgxy_set
+	{
+		# np = 2;	# number of z planes, skipped if not defined
+		z_1 = 100.0;
+		z_2 = 200.0;
+	}
+
+	# --- additional parameters
+	#	--- TKE hbl def. [optional]
+	# TKE_hbl_threshold_stable = 0.3;
+	# TKE_hbl_threshold_unstable = 0.1;
+
+	# 	--- restrict height for -z averaged energy time series [m] [optional]
+	# energy_avg_height = 550.0;
+
+	#	--- max length to hold data in memory [optional]
+	# max_mem_length = 100 * 1024;
+}
+# -----------------------------------------------------------------------------
+
+spectrum_series
+{
+	begin = time.begin;	# start time
+	
+	nskip = 1;		# calculate once in nskip iterations, each iteration := 1
+	# dt = 1.0;		# time step, --higher-- priority than 'nskip'
+
+	# num = 3;		# number of series, skipped if not defined
+
+	# --- wavevenumbers in: - kxmax <= kx <= kmax, 0 <= ky <= kymax 
+	unit_1 { zp = domain.z + 0.3 * domain.height; kxmax = 3; kymax = 3; }
+	unit_2 { zp = domain.z + 0.2 * domain.height; kxmax = 3; kymax = 3; }
+	unit_3 { zp = domain.z + 0.1 * domain.height; kxmax = 3; kymax = 3; }
+
+	#	--- max length to hold data in memory [optional]
+	# max_mem_length = 100 * 1024;
+}
+# -----------------------------------------------------------------------------
+
+time_scan
+{
+# NOTE: dump is not supported for time scans
+
+	begin = 2400.0;		# scan start time [s]
+
+	# nskip = 1000;		# calculate once in nksip iterations, each iteration := 1
+	dt = 10.0;		# scan time step [s], --higher-- priority than 'nskip'
+
+	# --- optionally set output variables
+
+	cntrl_grid = false;		# all keys, optional, default = all 'false'
+	cntrl_grid {
+		# dz = true;
+
+		# --- cell center & edge coordinates
+		# pz = true; 
+		# ez = true;
+
+		# --- only in adaptive grid mode
+		# monitor_function = true;
+	}
+
+	cntrl_avgxy = false;		# all keys, optional, default = all 'false'
+	cntrl_avgxy {
+		# U = true;
+		# V = true;
+		# W = true;
+
+		# Theta = true;
+		# Theta_p = true;
+		# Tabs = true;
+
+		# Q = true;
+		# Qvapor = true;	
+
+		# UW_flux = true;
+		# VW_flux = true;
+		# TW_flux = true;
+		# QW_flux = true;
+
+		# U_variance = true;
+		# V_variance = true;
+		# W_variance = true;
+		# Theta_variance = true;
+		# Q_variance = true;
+	}
+
+	cntrl_z_profile = false;	# all keys, optional, default = all 'false'
+	cntrl_z_profile {
+		# U = true;
+		# V = true;
+		# W = true;
+
+		# Theta = true;
+		# Theta_p = true;
+		# Tabs = true;
+
+		# Q = true;
+		# Qvapor = true;
+	}
+	
+	z_profile_num = 0;
+	z_profile_1 { x = domain.x + 0.5 * domain.length; y = domain.y + 0.5 * domain.width; }
+}
+# -----------------------------------------------------------------------------
+
+forcing_gen
+{
+# NOTE: dump is not supported for forcing generation
+
+	# --- [ = 0 if not defined]
+	# num_pxy = 0;
+	# num_pxz = 0;
+	# num_pyz = 0;
+	# num_pz = 0;
+	# --- e.g.:	
+	pxy_1 { zpos = domain.z + 0.5 * domain.height; }
+	pxz_1 { ypos = domain.y + 0.5 * domain.width; }
+	pyz_1 { xpos = domain.x + 0.5 * domain.length; }
+	pz_1 {
+		xpos = domain.x + 0.5 * domain.length;
+		ypos = domain.y + 0.5 * domain.width;
+	}
+
+	cntrl_pxy = true;	# all keys, optional, default = all 'false'
+	cntrl_pxz = true;	# all keys, optional, default = all 'false'
+	cntrl_pyz = true;	# all keys, optional, default = all 'false'
+	cntrl_pz = true;	# all keys, optional, default = all 'false'
+	# --- specify variable keys, e.g.:
+	cntrl_pxy { 
+		# U = true; V = true; W = true; 
+		# Theta = true;
+		# Qhum = true;
+		# TKE = true; EPS = true; 
+	}
+
+	begin = 2400.0;		# start time [s]
+	# end = time.end;	# end time [s], optional, default = [begin, \infty]
+
+	# nskip = 1000;		# calculate once in nksip iterations, each iteration := 1
+	dt = 10.0;		# time step [s], --higher-- priority than 'nskip'
+}
+# -----------------------------------------------------------------------------
+
+stats
+{
+	num = 9;
+	
+	unit_1 {
+		begin = 0.8 * 3600.0;	# start time for averaging
+		end = 1.0 * 3600.0;	# end time for averaging 
+
+		nskip = 10;
+		axis = "Z";
+		type = "energy-eq";
+
+		output.SUBDIR = "stat-1d/";
+		dump.SUBDIR = "stat-1d/";
+
+		# output.format = "tecplot";	# "tecplot" || "netcdf"
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- ensemble mode [optional] -- ensemble averaging
+		# is_ensemble = false;
+	}
+	unit_2 {
+		begin = 0.8 * 3600.0;		# start time for averaging
+		end = 1.0 * 3600.0;		# end time for averaging 
+
+		nskip = 10;
+		axis = "XYZ";
+		type = "flux";
+
+		output.SUBDIR = "stat-3d/";
+		dump.SUBDIR = "stat-3d/";
+
+		# output.format = "tecplot";	# "tecplot" || "netcdf"
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- ensemble mode [optional] -- ensemble averaging
+		# is_ensemble = false;
+	}
+	unit_3 {
+		begin = 0.8 * 3600.0;		# start time for averaging
+		end = 1.0 * 3600.0;		# end time for averaging 
+
+		nskip = 10;
+		axis = "XY";
+		type = "flux";
+
+		output.SUBDIR = "stat-2d-XY/";
+		dump.SUBDIR = "stat-2d-XY/";
+
+		# output.format = "tecplot";	# "tecplot" || "netcdf"
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- ensemble mode [optional] -- ensemble averaging
+		# is_ensemble = false;
+	}
+	unit_4 {
+		begin = 0.8 * 3600.0;		# start time for averaging
+		end = 1.0 * 3600.0;		# end time for averaging 
+
+		nskip = 10;
+		axis = "XZ";
+		type = "flux";
+
+		output.SUBDIR = "stat-2d-XZ/";
+		dump.SUBDIR = "stat-2d-XZ/";
+
+		# output.format = "tecplot";	# "tecplot" || "netcdf"
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- ensemble mode [optional] -- ensemble averaging
+		# is_ensemble = false;
+	}
+
+	unit_5 {
+		begin = 0.1 * 3600.0;		# start time for averaging
+		end = 0.1 * 3600.0 + 1.0;		# end time for averaging 
+
+		nskip = 10;
+		axis = "XYZ";
+		type = "flux";
+
+		output.SUBDIR = "stat-3d_0_1/";
+		dump.SUBDIR = "stat-3d_0_1/";
+
+		# output.format = "tecplot";	# "tecplot" || "netcdf"
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- ensemble mode [optional] -- ensemble averaging
+		# is_ensemble = false;
+	}
+	unit_6 {
+		begin = 0.3 * 3600.0;		# start time for averaging
+		end = 0.3 * 3600.0 + 1.0;		# end time for averaging 
+
+		nskip = 10;
+		axis = "XYZ";
+		type = "flux";
+
+		output.SUBDIR = "stat-3d_0_3/";
+		dump.SUBDIR = "stat-3d_0_3/";
+
+		# output.format = "tecplot";	# "tecplot" || "netcdf"
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- ensemble mode [optional] -- ensemble averaging
+		# is_ensemble = false;
+	}
+	unit_7 {
+		begin = 0.5 * 3600.0;		# start time for averaging
+		end = 0.5 * 3600.0 + 1.0;		# end time for averaging 
+
+		nskip = 10;
+		axis = "XYZ";
+		type = "flux";
+
+		output.SUBDIR = "stat-3d_0_5/";
+		dump.SUBDIR = "stat-3d_0_5/";
+
+		# output.format = "tecplot";	# "tecplot" || "netcdf"
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- ensemble mode [optional] -- ensemble averaging
+		# is_ensemble = false;
+	}
+	unit_8 {
+		begin = 0.7 * 3600.0;		# start time for averaging
+		end = 0.7 * 3600.0 + 1.0;		# end time for averaging 
+
+		nskip = 10;
+		axis = "XYZ";
+		type = "flux";
+
+		output.SUBDIR = "stat-3d_0_7/";
+		dump.SUBDIR = "stat-3d_0_7/";
+
+		# output.format = "tecplot";	# "tecplot" || "netcdf"
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- ensemble mode [optional] -- ensemble averaging
+		# is_ensemble = false;
+	}
+	unit_9 {
+		begin = 0.9 * 3600.0;		# start time for averaging
+		end = 0.9 * 3600.0 + 1.0;		# end time for averaging 
+
+		nskip = 10;
+		axis = "XYZ";
+		type = "flux";
+
+		output.SUBDIR = "stat-3d_0_9/";
+		dump.SUBDIR = "stat-3d_0_9/";
+
+		# output.format = "tecplot";	# "tecplot" || "netcdf"
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- ensemble mode [optional] -- ensemble averaging
+		# is_ensemble = false;
+	}
+} 
+# -----------------------------------------------------------------------------
+
+pdf
+{
+	# num = 1;
+
+	unit_1 { 
+		begin = 0.7 * 3600.0;
+		end = 1.0 * 3600.0;
+		dt = 1.0;
+
+		# --- define [xmin, xmax] || xp, [ymin, ymax] || yp, [zmin, zmax] || zp
+		#	default = all domain
+		zp = domain.z + 0.2 * domain.height;
+
+		output.SUBDIR = "pdf/";
+		dump.SUBDIR = "pdf/";
+
+		cntrl_default = true;
+		nbins_default = 256;
+
+		# --- reset options: [begin, reset_time] -- find histogram parameters 
+		#	if not defined set min-max range for each variable in controls
+		reset_time = 0.8 * 3600.0;
+		reset_safety = 0.25;	# relative to min-max found
+					# e.g.: min' = min - reset_safety * (max - min)
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- change default control using keys
+		# cntrl { 
+		#	U = true; V = true; W = true; Pressure = true;
+		#	U_grad_x = true; U_grad_y = true; U_grad_z = true;
+		#	V_grad_x = true; V_grad_y = true; V_grad_z = true;
+		#	W_grad_x = true; W_grad_y = true; W_grad_z = true;
+		#	Suv = true; Suw = true; Svw = true;			# strain-tensor
+		#	Omega_uv = true; Omega_uw = true; Omega_vw = true;	# vorticity-tensor
+		#	Theta = true;
+		#	Theta_grad_x = true; Theta_grad_y = true; Theta_grad_z = true;
+		#	Q = true;
+		#	Q_grad_x = true; Q_grad_y = true; Q_grad_z = true;
+
+		# --- tracers 'C' correspond to passive_tracers {} def. [use index in: 1...passive_tracers.num]
+		#	C1 = true;
+		#	C1_grad_x = true; C1_grad_y = true; C1_grad_z = true;
+		#	C2 = true;
+		#
+		# }
+
+		# --- setting min-max for any variable
+		#	this has to be defined if 'reset_time' is skipped, e.g.:
+		# U { min = -1.0; max = 1.0; }
+
+		# --- setting number of bins for any variable, e.g.:
+		# U { nbins = 512; }
+	}
+}
+# -----------------------------------------------------------------------------
+
+joint_pdf
+{
+	# num = 1;
+
+	unit_1 { 
+		begin = 0.7 * 3600.0;
+		end = 1.0 * 3600.0;
+		dt = 1.0;
+
+		# --- define [xmin, xmax] || xp, [ymin, ymax] || yp, [zmin, zmax] || zp
+		#	default = all domain
+		zp = domain.z + 0.2 * domain.height;
+
+		output.SUBDIR = "joint-pdf/";
+		dump.SUBDIR = "joint-pdf/";
+
+		cntrl_default = true;
+		nxbins_default = 256;
+		nybins_default = 256;
+
+		# --- reset options: [begin, reset_time] -- find histogram parameters 
+		#	if not defined set min-max range for each variable in controls
+		reset_time = 0.8 * 3600.0;
+		reset_safety = 0.25;	# relative to min-max found
+					# e.g.: min' = min - reset_safety * (max - min)
+
+		# --- regular mode [optional] -- shifts accumulation window
+		# is_regular = false;
+
+		# --- change default control using keys
+		# cntrl { 
+		#	UV = true; UW = true; VW = true;
+		#	PSuu = true; PSvv = true; PSww = true;
+		#	PSuv = true; PSuw = true; PSvw = true;
+		#	TU = true; TV = true; TW = true;
+		#	QU = true; QV = true; QW = true;
+		#	QT = true;
+
+		# --- tracers 'C' correspond to passive_tracers {} def. [use index in: 1...passive_tracers.num]
+		#	C1U = true; C1V = true; C1W = true; 
+		#	C1T = true; C1Q = true;
+		# --- tracer/tracer joint pdf, using strict upper diagonal notation, e.g.:
+		#	C1C2 = true; C1C3 = true; C2C3 = true;
+		#
+		# }
+
+		# --- setting min-max for any variable
+		#	this has to be defined if 'reset_time' is skipped, e.g.:
+		# UV { xmin = -1.0; xmax = 1.0; ymin = - 1.0; ymax = 1.0; }
+
+		# --- setting number of bins for any variable, e.g.:
+		# UV { nxbins = 512; nybins = 512; }
+	}
+}
+# -----------------------------------------------------------------------------
+
+runtime_filter
+{
+	# begin = 600.0;	# set a regular filter
+	# dt = 600.0;
+
+	mark = 600.0;		# OR: apply filter at time = mark only
+				# mark has --higher-- priority than regular mode
+
+	# num = 0;	# number of filters applied, output = sum of all units
+			# u = u_f[1] + u_f[2] + ...
+			# --- skipped if not defined
+
+	unit_1 { 
+		# --- keep some rolls
+		mode = "include";
+		is_remove_mean = false;
+
+		kxmin = 0; kxmax = 0;
+		kymin = 0; kymax = 5;
+	}
+
+	unit_2 {
+		# --- add small scale disturbances
+		mode = "exclude";	# adding (u - u_f)
+		is_remove_mean = false;
+
+		kxmin = 0; kxmax = 10;
+		kymin = 0; kymax = 10;
+	}
+}
+# -----------------------------------------------------------------------------
