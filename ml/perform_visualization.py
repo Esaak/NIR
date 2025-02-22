@@ -50,29 +50,34 @@ def perform_eda(X, y):
     plt.title('Feature-Target Correlations')
     plt.show()
 
-def density_scatter( x , y, ax = None, sort = True, bins = 20, **kwargs )   :
-    """
-    Scatter plot colored by 2d histogram
-    """
-    if ax is None :
-        fig , ax = plt.subplots()
-    data , x_e, y_e = np.histogram2d( x, y, bins = bins, density = True )
-    z = interpn( ( 0.5*(x_e[1:] + x_e[:-1]) , 0.5*(y_e[1:]+y_e[:-1]) ) , data , np.vstack([x,y]).T , method = "splinef2d", bounds_error = False)
-
-    #To be sure to plot all data
+def density_scatter(x, y, ax=None, bins=20, cmap='viridis', **kwargs):
+    if ax is None:
+        fig, ax = plt.subplots()
+    
+    x_copy = x.copy().to_numpy()
+    
+    # Calculate the 2D histogram
+    data, x_e, y_e = np.histogram2d(x_copy, y, bins=bins, density=True)
+    
+    # Interpolate the density values for each point
+    x_centers = 0.5 * (x_e[1:] + x_e[:-1])
+    y_centers = 0.5 * (y_e[1:] + y_e[:-1])
+    z = interpn((x_centers, y_centers), data, np.vstack([x_copy, y]).T, 
+                method="splinef2d", bounds_error=False)
+    
+    # Set NaN values to 0
     z[np.where(np.isnan(z))] = 0.0
-
-    # Sort the points by density, so that the densest points are plotted last
-    # if sort :
-    #     idx = z.argsort()
-    #     x, y, z = x[idx], y[idx], z[idx]
-
-    ax.scatter( x, y, c=z, **kwargs )
-
-    norm = Normalize(vmin = np.min(z), vmax = np.max(z))
-    # cbar = fig.colorbar(cm.ScalarMappable(norm = norm), ax=ax)
-    # cbar.ax.set_ylabel('Density')
-
+    
+    # Sort the points by density so that densest points are plotted last
+    idx = z.argsort()
+    x_sorted, y_sorted, z_sorted = x_copy[idx], y[idx], z[idx]
+    
+    # Create a scatter plot with beauty improvements
+    sc = ax.scatter(x_sorted, y_sorted, c=z_sorted, cmap=cmap, alpha=1, 
+                   s=kwargs.get('s', 30), edgecolor=kwargs.get('edgecolor', 'none'))
+    
+    # Set background color and grid
+    
     return ax
 
 def perform_eda_short(X, y):
@@ -134,14 +139,14 @@ def performance_visualizations(y_pred, y_test):
     plt.title('RMSE Score by Model and Target')
     plt.xticks(rotation=45)
     plt.show()
-    
+    # plt.savefig("catboost_model_hist.png")
     
     # Actual vs Predicted plots
     shape_col = 2
     shape_row = y_test.shape[1] // shape_col + int(y_test.shape[1] % shape_col != 0) 
     
     fig, axes = plt.subplots(shape_row, shape_col, figsize=(6, 6))
-    fig.suptitle(f'Actual vs Predicted')
+    fig.suptitle(f'True vs Predicted')
     for idx, target in enumerate(y_test.columns):
         row = idx // shape_row
         col = idx % shape_col
@@ -168,9 +173,10 @@ def performance_visualizations(y_pred, y_test):
         axes[row, col].plot([y_test[target].min(), y_test[target].max()],
                                 [y_test[target].min(), y_test[target].max()], 'r--', lw=2)
         axes[row, col].set_title(f'{target}')
-        axes[row, col].set_xlabel('Actual')
-        axes[row, col].set_ylabel('Predicted')            
+        axes[row, col].set_xlabel('True, m')
+        axes[row, col].set_ylabel('Predicted, m')            
     plt.tight_layout()
+    # plt.savefig("catboost_model.png")
     plt.show()
     
     metrics_df = pd.DataFrame.from_dict(metrics)

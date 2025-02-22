@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/app/nse/ml/catboost_ml.py", line 2, in <module>
+    import pandas as pd
+  File "/app/tmp1/anaconda/envs/nse-torch/lib/python3.10/site-packages/pandas/__init__.py", line 116, in <module>
+    from pandas.tseries.api import infer_freq
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 975, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1074, in get_data
+KeyboardInterrupt
