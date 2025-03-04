@@ -55,7 +55,6 @@ def density_scatter(x, y, ax=None, bins=20, cmap='viridis', **kwargs):
         fig, ax = plt.subplots()
     
     x_copy = x.copy().to_numpy()
-    
     # Calculate the 2D histogram
     data, x_e, y_e = np.histogram2d(x_copy, y, bins=bins, density=True)
     
@@ -170,7 +169,9 @@ def performance_visualizations(y_pred, y_test):
                         y=y_pred[target],
                         ax=axes[row, col])
         # axes[row, col].scatter(y_test[target], y_pred[target], alpha=0.5)
-        axes[row, col].plot([y_test[target].min(), y_test[target].max()],
+        # axes[row, col].plot([y_test[target].min(), y_test[target].max()],
+        #                         [y_test[target].min(), y_test[target].max()], 'r--', lw=2)
+        axes[row, col].scatter([y_test[target].min(), y_test[target].max()],
                                 [y_test[target].min(), y_test[target].max()], 'r--', lw=2)
         axes[row, col].set_title(f'{target}')
         axes[row, col].set_xlabel('True, m')

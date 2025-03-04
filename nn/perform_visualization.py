@@ -109,7 +109,9 @@ def perform_eda_short(X, y):
     plt.tight_layout()
     plt.show()
     
-def performance_visualizations(y_pred, y_test):
+def performance_visualizations(y_pred, y_test, filename_barplot = "nn_model_hist.png", 
+                                                filename_compare = "nn_model.png",
+                                                filename_text = "metrics.csv"):
     metrics = {'mse': {}, 'r2': {}, 'rmse': {}}
     
     for target in y_test.columns:
@@ -140,7 +142,7 @@ def performance_visualizations(y_pred, y_test):
     plt.title('RMSE Score by Model and Target')
     plt.xticks(rotation=45)
     # plt.show()
-    plt.savefig("nn_model_hist.png")
+    plt.savefig(filename_barplot)
     
     # Actual vs Predicted plots
     shape_col = 2
@@ -177,10 +179,11 @@ def performance_visualizations(y_pred, y_test):
         axes[row, col].set_xlabel('True, m')
         axes[row, col].set_ylabel('Predicted, m')            
     plt.tight_layout()
-    plt.savefig("nn_model.png")
+    plt.savefig(filename_compare)
     # plt.show()
     
     metrics_df = pd.DataFrame.from_dict(metrics)
     metrics_df = metrics_df.map(lambda x: x[0] if isinstance(x, list) else x)
     metrics_df = metrics_df.astype(float)
+    metrics_df.to_csv(filename_text)
     print(metrics_df)

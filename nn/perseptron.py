@@ -37,7 +37,7 @@ class TargetPreprocessor(BaseEstimator, TransformerMixin):
         for col in ['c_std_y', 'c_std_z']:
             self.stats[f'{col}_min'] = np.min(data[col])
         
-        for col in ['c_mean_y', 'c_mean_z']:
+        for col in ['c_delta_y', 'c_delta_z']:
             self.stats[f'{col}_mean'] = np.mean(data[col])
             self.stats[f'{col}_std'] = np.std(data[col])
         
@@ -51,10 +51,15 @@ class TargetPreprocessor(BaseEstimator, TransformerMixin):
             data[col] -= self.stats[f'{col}_min'] - self.near_zero
             data[col] = np.log1p(data[col]) if col == 'c_std_z' else np.log(data[col])
         
-        # Standardize mean values
-        for col in ['c_mean_y', 'c_mean_z']:
-            data[col] = (data[col] - self.stats[f'{col}_mean']) / self.stats[f'{col}_std']
+        mean_y_sign = np.sign(data["c_delta_y"])
+        data["c_delta_y"] = np.abs(data["c_delta_y"])       
+        data["c_delta_y"] = np.log1p(data["c_delta_y"])
+        data["c_delta_y"]*=mean_y_sign
         
+        data["c_delta_z"] = (data["c_delta_z"] - self.stats["c_delta_z_mean"])/self.stats["c_delta_z_std"]
+        mean_z_sign = np.sign(data["c_delta_z"])
+        data["c_delta_z"]= mean_z_sign * np.log1p(np.abs(data["c_delta_z"]))
+
         return data
     
     def inverse_transform(self, data: pd.DataFrame) -> pd.DataFrame:
@@ -67,10 +72,16 @@ class TargetPreprocessor(BaseEstimator, TransformerMixin):
         for col in ['c_std_y', 'c_std_z']:
             data[col] += self.stats[f'{col}_min'] - self.near_zero
         
-        # Reverse standardization of mean values
-        for col in ['c_mean_y', 'c_mean_z']:
-            data[col] = data[col] * self.stats[f'{col}_std'] + self.stats[f'{col}_mean']
+        mean_y_sign = np.sign(data["c_delta_y"])
+        data["c_delta_y"] = np.abs(data["c_delta_y"])
+        data["c_delta_y"] = np.expm1(data["c_delta_y"])
+        data["c_delta_y"] *=mean_y_sign
         
+        mean_z_sign = np.sign(data["c_delta_z"])
+        data["c_delta_z"] = np.expm1(np.abs(data["c_delta_z"]))
+        data["c_delta_z"] *=mean_z_sign
+        data["c_delta_z"] = data["c_delta_z"] * self.stats["c_delta_z_std"] + self.stats["c_delta_z_mean"]
+
         return data
 
 
@@ -126,7 +137,7 @@ class ModelTrainer:
         early_stopping_patience: int = None
     ) -> Dict[str, List[float]]:
         # Convert data to tensors
-        X_train_tensor = torch.FloatTensor(X_train).to(self.device)
+        X_train_tensor = torch.FloatTensor(X_train.to_numpy()).to(self.device)
         y_train_tensor = torch.FloatTensor(y_train.to_numpy()).to(self.device)
         
         # Create data loader
@@ -136,7 +147,7 @@ class ModelTrainer:
         # Prepare validation data if provided
         if validation_data:
             X_val, y_val = validation_data
-            X_val_tensor = torch.FloatTensor(X_val).to(self.device)
+            X_val_tensor = torch.FloatTensor(X_val.to_numpy()).to(self.device)
             y_val_tensor = torch.FloatTensor(y_val.to_numpy()).to(self.device)
         
         # Training metrics
@@ -188,7 +199,9 @@ class ModelTrainer:
                         if patience_counter >= early_stopping_patience:
                             logger.info(f"Early stopping triggered at epoch {epoch+1}")
                             break
-            
+                # if val_loss < best_val_loss:
+                #     best_val_loss = val_loss
+                #     torch.save()
             # Print progress
             if (epoch + 1) % 10 == 0:
                 log_msg = f'Epoch [{epoch+1}/{epochs}], Train Loss: {avg_train_loss:.4f}'
@@ -201,7 +214,7 @@ class ModelTrainer:
     def evaluate(self, X_test: np.ndarray, y_test: pd.DataFrame) -> Tuple[pd.DataFrame, float]:
         self.model.eval()
         with torch.no_grad():
-            X_test_tensor = torch.FloatTensor(X_test).to(self.device)
+            X_test_tensor = torch.FloatTensor(X_test.to_numpy()).to(self.device)
             y_test_tensor = torch.FloatTensor(y_test.to_numpy()).to(self.device)
             
             test_outputs = self.model(X_test_tensor)
@@ -241,7 +254,7 @@ class DataLoader:
         if not folder_paths:
             folder_paths = [os.path.join(base_path, "output_28_12_2024")]
         
-        folder_paths = [os.path.join(base_path, "output_28_12_2024")]
+        folder_paths = [os.path.join(base_path, "output_19_01_2025_2")]
         X = pd.DataFrame()
         y = pd.DataFrame()
         
@@ -256,9 +269,9 @@ class DataLoader:
                     df.drop(df.columns[0], axis=1, inplace=True)
             
             # Ensure 'y' column exists
-            if X_tmp.columns[0] != "y":
-                X_tmp.insert(0, "y", np.ones(X_tmp.shape[0]) * 1000)
-            
+            # if X_tmp.columns[0] != "y":
+            #     X_tmp.insert(0, "y", np.ones(X_tmp.shape[0]) * 1000)
+            # X_tmp.drop(columns="Tracer", inplace=True)
             logger.info(f"Loaded data from {folder}: X shape={X_tmp.shape}, y shape={y_tmp.shape}")
             
             # Concatenate data
@@ -271,15 +284,17 @@ class DataLoader:
         return X, y
     
     @staticmethod
-    def preprocess_and_split(
-        X: pd.DataFrame,
-        y: pd.DataFrame,
-        test_size: float = 0.2,
-        val_size: float = 0.2,
-        eval_size: float = 0.1,
-        random_state: int = 42
-    ) -> Dict[str, Union[np.ndarray, pd.DataFrame, StandardScaler, TargetPreprocessor]]:
-        # Filter out rows with zero standard deviations
+    def add_exp_num(X):
+        tracers_num = len(np.unique(X["Tracer"]))
+        distances_num = len(np.unique(X["distances"]))
+        experiment_num = []
+        for exp in range(X.shape[0]//(tracers_num*distances_num)):
+            experiment_num.extend(list(np.ones(tracers_num*distances_num) * (exp + 1)))
+        X["experiment_num"] = experiment_num
+        return X
+    
+    @staticmethod
+    def del_outs(X, y):
         mask = (y["c_std_y"] != 0) & (y["c_std_z"] != 0)
         X = X[mask]
         y = y[mask]
@@ -289,46 +304,145 @@ class DataLoader:
         cut_mask = y["c_std_y"] >= hist_mode
         X = X[cut_mask]
         y = y[cut_mask]
+        print(X.shape, y.shape)
+        return X, y
+    
+    @staticmethod
+    def make_means_target(X, y):
+        y["c_mean_y"] = X["y"] - y["c_mean_y"]
+        y["c_mean_z"] = X["z"] - y["c_mean_z"]
+        return y
+    
+    @staticmethod
+    def data_split(X, y, test_size = 0.2, valid_size = None, eval_size = None, random_seed=42):
+        rng = np.random.default_rng(seed=random_seed)
+        
+        experiment_nums = X["experiment_num"].unique()
+        total_experiments = len(experiment_nums)
+        
+        n_test = int(test_size * total_experiments)
+        
+        splits = {}
+        remaining_exps = set(experiment_nums)
+        
+        test_experiments = set(rng.choice(list(remaining_exps), n_test, replace=False))
+        remaining_exps -= test_experiments
+        splits['test'] = {
+            'X': X[X["experiment_num"].isin(test_experiments)].copy(),
+            'y': None
+        }
+        
+        if valid_size:
+            n_valid = int(valid_size * (total_experiments - n_test))
+            valid_experiments = set(rng.choice(list(remaining_exps), n_valid, replace=False))
+            remaining_exps -= valid_experiments
+            splits['valid'] = {
+                'X': X[X["experiment_num"].isin(valid_experiments)].copy(),
+                'y': None
+            }
+        
+        if eval_size:
+            n_eval = int(eval_size * (total_experiments - n_test - n_valid))
+            eval_experiments = set(rng.choice(list(remaining_exps), n_eval, replace=False))
+            remaining_exps -= eval_experiments
+            
+            splits['eval'] = {
+                'X': X[X["experiment_num"].isin(eval_experiments)].copy(),
+                'y': None
+            }
+        
+        splits['train'] = {
+            'X': X[X["experiment_num"].isin(remaining_exps)].copy(),
+            'y': None
+        }
+        
+        for split_name in splits:
+            splits[split_name]['y'] = y.loc[splits[split_name]['X'].index].copy()
+        
+        split_shapes = [f"{name}: X{splits[name]['X'].shape}, y{splits[name]['y'].shape}" 
+                    for name in ['train', 'test', 'valid', 'eval'] 
+                    if name in splits]
+        print(f"Split shapes: {', '.join(split_shapes)}")
+        
+        if valid_size and eval_size:
+            return (splits['train']['X'], splits['test']['X'], splits['valid']['X'], splits['eval']['X'],
+                    splits['train']['y'], splits['test']['y'], splits['valid']['y'], splits['eval']['y'])
+        elif valid_size:
+            return (splits['train']['X'], splits['test']['X'], splits['valid']['X'],
+                    splits['train']['y'], splits['test']['y'], splits['valid']['y'])
+        else:
+            return splits['train']['X'], splits['test']['X'], splits['train']['y'], splits['test']['y']
+    
+    @staticmethod
+    def preprocess_and_split(
+        X: pd.DataFrame,
+        y: pd.DataFrame,
+        test_size: float = None,
+        val_size: float = None,
+        eval_size: float = None,
+        random_seed: int = 42
+    ) -> Dict[str, Union[np.ndarray, pd.DataFrame, StandardScaler, TargetPreprocessor]]:
+        # Filter out rows with zero standard deviations
+        y = DataLoader.make_means_target(X, y)
+        y.rename(columns={"c_mean_y": "c_delta_y", "c_mean_z": "c_delta_z"}, inplace=True)
+        X = DataLoader.add_exp_num(X)
+        X, y = DataLoader.del_outs(X, y)
 
         # Feature scaling
-        feature_scaler = StandardScaler()
-        X_scaled = feature_scaler.fit_transform(X)
-        
-        # Initial train/test split
-        X_temp, X_test, y_temp, y_test = train_test_split(
-            X_scaled, y, test_size=test_size, random_state=random_state
-        )
-        
-        # Train/validation split
-        X_train_full, X_val, y_train_full, y_val = train_test_split(
-            X_temp, y_temp, test_size=val_size, random_state=random_state
-        )
-        
-        # Train/eval split
-        X_train, X_eval, y_train, y_eval = train_test_split(
-            X_train_full, y_train_full, test_size=eval_size, random_state=random_state
-        )
-        
-        # Target preprocessing
+        # feature_scaler = StandardScaler()
+        # X_scaled = feature_scaler.fit_transform(X)
         target_preprocessor = TargetPreprocessor()
-        target_preprocessor.fit(pd.concat([y_temp, y_test]))
-        
-        y_train_transformed = target_preprocessor.transform(y_train)
-        y_val_transformed = target_preprocessor.transform(y_val)
-        y_eval_transformed = target_preprocessor.transform(y_eval)
-        
-        return {
-            'X_train': X_train,
-            'X_val': X_val,
-            'X_eval': X_eval,
-            'X_test': X_test,
-            'y_train': y_train_transformed,
-            'y_val': y_val_transformed,
-            'y_eval': y_eval_transformed,
-            'y_test': y_test,
-            'feature_scaler': feature_scaler,
-            'target_preprocessor': target_preprocessor
-        }
+        target_preprocessor.fit(y)
+
+        if val_size and eval_size:
+            X_train, X_test, X_val, X_eval, y_train, y_test, y_val, y_eval = DataLoader.data_split(X, y, test_size, val_size, eval_size, random_seed)
+            X_train.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            X_test.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            X_val.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            X_eval.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            y_train_transformed = target_preprocessor.transform(y_train)
+            y_val_transformed = target_preprocessor.transform(y_val)
+            y_eval_transformed = target_preprocessor.transform(y_eval)
+            return {
+                'X_train': X_train,
+                'X_val': X_val,
+                'X_eval': X_eval,
+                'X_test': X_test,
+                'y_train': y_train_transformed,
+                'y_val': y_val_transformed,
+                'y_eval': y_eval_transformed,
+                'y_test': y_test,
+                # 'feature_scaler': feature_scaler,
+                'target_preprocessor': target_preprocessor
+            }
+        elif val_size:
+            X_train, X_test, X_val, y_train, y_test, y_val = DataLoader.data_split(X, y, test_size, valid_size = val_size, random_seed = random_seed)
+            X_train.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            X_test.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            X_val.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            y_train_transformed = target_preprocessor.transform(y_train)
+            y_val_transformed = target_preprocessor.transform(y_val)
+            return {
+                'X_train': X_train,
+                'X_val': X_val,
+                'X_test': X_test,
+                'y_train': y_train_transformed,
+                'y_val': y_val_transformed,
+                'y_test': y_test,
+                'target_preprocessor': target_preprocessor
+            }
+        else:
+            X_train, X_test, y_train, y_test = DataLoader.data_split(X, y, test_size, random_seed = random_seed)
+            X_train.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            X_test.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            y_train_transformed = target_preprocessor.transform(y_train)
+            return {
+                'X_train': X_train,
+                'X_test': X_test,
+                'y_train': y_train_transformed,
+                'y_test': y_test,
+                'target_preprocessor': target_preprocessor
+            }
 
 
 def plot_training_history(metrics: Dict[str, List[float]], save_path: str = None):
@@ -368,8 +482,8 @@ def main():
             'output_dim': 4
         },
         'training_params': {
-            'learning_rate': 1e-3,
-            'epochs': 500,
+            'learning_rate': 1e-4,
+            'epochs': 50,
             'batch_size': 128,
             'early_stopping_patience': 20
         },
@@ -393,7 +507,9 @@ def main():
     
     # Preprocess and split data
     logger.info("Preprocessing and splitting data...")
-    data = DataLoader.preprocess_and_split(X, y, random_state=config['random_seed'])
+    data = DataLoader.preprocess_and_split(X, y, random_seed=config['random_seed'], 
+        test_size = 0.2,
+        val_size = 0.2)
     
     # Initialize model
     logger.info("Initializing model...")
@@ -410,7 +526,7 @@ def main():
         epochs=config['training_params']['epochs'],
         batch_size=config['training_params']['batch_size'],
         validation_data=(data['X_val'], data['y_val']),
-        early_stopping_patience=config['training_params']['early_stopping_patience']
+        # early_stopping_patience=config['training_params']['early_stopping_patience']
     )
     
     # Plot and save training history
@@ -420,20 +536,28 @@ def main():
     logger.info("Evaluating model...")
     y_pred, rmse_loss = trainer.evaluate(data['X_test'], data['y_test'])
     
+
+    y_test_transformed = data['target_preprocessor'].transform(data['y_test'].copy())
+    performance_visualizations(y_pred, y_test_transformed, filename_barplot = "nn_model_hist_transformed.png", 
+                                                filename_compare = "nn_model_transformed.png",
+                                                filename_text = "metrics_transformed.csv")
+
     # Inverse transform predictions
     y_pred_original = data['target_preprocessor'].inverse_transform(y_pred)
     
     logger.info(f"Final Test RMSE Loss: {rmse_loss:.4f}")
     
     # Visualize performance
-    performance_visualizations(y_pred_original, data['y_test'])
+    performance_visualizations(y_pred_original, data['y_test'], filename_barplot = "nn_model_hist.png", 
+                                                filename_compare = "nn_model.png",
+                                                filename_text = "metrics.csv")
     
     # Save model and metadata
     model_path = os.path.join(config['output_dir'], 'regression_neural_network.pth')
     trainer.save_model(
         model_path,
         metadata={
-            'feature_scaler': data['feature_scaler'],
+            # 'feature_scaler': data['feature_scaler'],
             'target_preprocessor': data['target_preprocessor'],
             'train_losses': metrics['train_loss'],
             'val_losses': metrics.get('val_loss'),
