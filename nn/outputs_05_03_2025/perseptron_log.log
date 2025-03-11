@@ -1,0 +1,46 @@
+2025-03-04 21:13:57,506 - __main__ - INFO - Loading data...
+2025-03-04 21:14:00,162 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-04 21:14:00,162 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:522: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:522: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-04 21:14:02,472 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-04 21:14:03,697 - __main__ - INFO - Training on: cuda
+2025-03-04 21:14:03,697 - __main__ - INFO - Starting training...
+2025-03-04 21:14:26,466 - __main__ - INFO - Saved best model with validation loss: 1.1444
+2025-03-04 21:14:48,533 - __main__ - INFO - Saved best model with validation loss: 1.1182
+2025-03-04 21:15:09,609 - __main__ - INFO - Saved best model with validation loss: 1.1036
+2025-03-04 21:16:42,440 - __main__ - INFO - Saved best model with validation loss: 1.0999
+2025-03-04 21:17:08,387 - __main__ - INFO - Saved best model with validation loss: 1.0959
+2025-03-04 21:17:57,807 - __main__ - INFO - Epoch [10/100], Train Loss: 1.0112, Val Loss: 1.1008, LR: 0.001000
+2025-03-04 21:18:44,738 - __main__ - INFO - Saved best model with validation loss: 1.0930
+2025-03-04 21:19:52,526 - __main__ - INFO - Saved best model with validation loss: 1.0870
+2025-03-04 21:21:46,873 - __main__ - INFO - Epoch [20/100], Train Loss: 0.9801, Val Loss: 1.1318, LR: 0.001000
+2025-03-04 21:25:33,262 - __main__ - INFO - Epoch [30/100], Train Loss: 0.9169, Val Loss: 1.1440, LR: 0.000250
+2025-03-04 21:27:23,213 - __main__ - INFO - Early stopping triggered at epoch 35
+2025-03-04 21:27:23,926 - __main__ - INFO - Training history plot saved to ./outputs_05_03_2025/training_history.png
+2025-03-04 21:27:23,926 - __main__ - INFO - Evaluating model...
+/app/nse/nn/perseptron.py:457: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(best_model_path)
+2025-03-04 21:27:23,951 - __main__ - INFO - Loaded best model with validation loss: 1.0869817733764648
+/app/nse/nn/perseptron.py:522: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:522: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-04 21:27:37,452 - __main__ - INFO - Final Test RMSE Loss: 69.0282
+2025-03-04 21:27:50,140 - __main__ - INFO - Model saved to ./outputs_05_03_2025/regression_neural_network.pth
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.133590  0.600738  0.365500
+c_delta_y  4.830731  0.055278  2.197892
+c_std_z    0.060428  0.938491  0.245820
+c_std_y    0.252758  0.911698  0.502750
+                   mse        r2       rmse
+c_delta_z  1108.024249  0.517322  33.286998
+c_delta_y   822.186622  0.029629  28.673797
+c_std_z     351.719303  0.846881  18.754181
+c_std_y     450.368095  0.858420  21.221878

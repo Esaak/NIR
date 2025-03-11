@@ -1,0 +1,38 @@
+2025-03-09 15:12:27,301 - __main__ - INFO - Loading data...
+2025-03-09 15:12:35,150 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-09 15:12:35,151 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-09 15:12:37,762 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-09 15:12:40,766 - __main__ - INFO - Training on: cuda
+2025-03-09 15:12:40,767 - __main__ - INFO - Starting training...
+2025-03-09 15:13:03,251 - __main__ - INFO - Saved best model with validation loss: 1.3204
+2025-03-09 15:13:24,016 - __main__ - INFO - Saved best model with validation loss: 1.3186
+2025-03-09 15:16:14,473 - __main__ - INFO - Epoch [10/100], Train Loss: 0.3178, Val Loss: 1.3726, LR: 0.000500
+2025-03-09 15:19:32,206 - __main__ - INFO - Epoch [20/100], Train Loss: 0.2675, Val Loss: 1.4005, LR: 0.000250
+2025-03-09 15:20:19,118 - __main__ - INFO - Early stopping triggered at epoch 22
+2025-03-09 15:20:20,383 - __main__ - INFO - Training history plot saved to ./outputs_09_03_2025/training_history.png
+2025-03-09 15:20:20,383 - __main__ - INFO - Evaluating model...
+2025-03-09 15:20:21,475 - __main__ - INFO - Loaded best model with validation loss: 1.318579912185669
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-09 15:20:35,406 - __main__ - INFO - Final Test RMSE Loss: 69.0227
+2025-03-09 15:20:47,684 - __main__ - INFO - Model saved to ./outputs_09_03_2025/regression_neural_network.pth
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.120141  0.640934  0.346614
+c_delta_y  6.641744 -0.298893  2.577158
+c_std_z    0.042775  0.956460  0.206821
+c_std_y    0.222974  0.922103  0.472202
+                   mse        r2       rmse
+c_delta_z   992.092291  0.567824  31.497497
+c_delta_y  3956.346087 -3.669408  62.899492
+c_std_z     298.976498  0.869843  17.290937
+c_std_y     441.930312  0.861072  21.022139

@@ -1,0 +1,50 @@
+2025-03-03 19:39:00,128 - __main__ - INFO - Loading data...
+2025-03-03 19:39:02,797 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-03 19:39:02,797 - __main__ - INFO - Preprocessing and splitting data...
+2025-03-03 19:39:04,541 - __main__ - INFO - Initializing model...
+2025-03-03 19:39:05,357 - __main__ - INFO - Training on: cuda
+2025-03-03 19:39:05,358 - __main__ - INFO - Starting training...
+2025-03-03 19:44:46,267 - __main__ - INFO - Epoch [10/50], Train Loss: 1.0427, Val Loss: 1.0957
+2025-03-03 19:50:37,483 - __main__ - INFO - Epoch [20/50], Train Loss: 1.0069, Val Loss: 1.1093
+2025-03-03 19:56:27,413 - __main__ - INFO - Epoch [30/50], Train Loss: 0.9835, Val Loss: 1.1292
+2025-03-03 20:02:19,035 - __main__ - INFO - Epoch [40/50], Train Loss: 0.9643, Val Loss: 1.1092
+2025-03-03 20:08:12,037 - __main__ - INFO - Epoch [50/50], Train Loss: 0.9449, Val Loss: 1.1159
+2025-03-03 20:08:12,333 - __main__ - INFO - Training history plot saved to ./outputs/training_history.png
+2025-03-03 20:08:12,333 - __main__ - INFO - Evaluating model...
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 570, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 541, in main
+    performance_visualizations(y_pred, y_test_transformed, filename_barplot = "nn_model_hist_transformed.png", 
+  File "/app/nse/nn/perform_visualization.py", line 188, in performance_visualizations
+    metrics_df.to_csv(filename_metrics)
+NameError: name 'filename_metrics' is not defined
+2025-03-03 20:13:03,768 - __main__ - INFO - Loading data...
+2025-03-03 20:13:06,438 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-03 20:13:06,439 - __main__ - INFO - Preprocessing and splitting data...
+2025-03-03 20:13:08,154 - __main__ - INFO - Initializing model...
+2025-03-03 20:13:08,983 - __main__ - INFO - Training on: cuda
+2025-03-03 20:13:08,983 - __main__ - INFO - Starting training...
+2025-03-03 20:16:27,534 - __main__ - INFO - Epoch [10/50], Train Loss: 1.0658, Val Loss: 1.1719
+2025-03-03 20:19:53,005 - __main__ - INFO - Epoch [20/50], Train Loss: 1.0290, Val Loss: 1.0949
+2025-03-03 20:23:17,625 - __main__ - INFO - Epoch [30/50], Train Loss: 1.0076, Val Loss: 1.1242
+2025-03-03 20:27:04,865 - __main__ - INFO - Epoch [40/50], Train Loss: 0.9834, Val Loss: 1.0982
+2025-03-03 20:31:04,519 - __main__ - INFO - Epoch [50/50], Train Loss: 0.9633, Val Loss: 1.1381
+2025-03-03 20:31:04,823 - __main__ - INFO - Training history plot saved to ./outputs/training_history.png
+2025-03-03 20:31:04,823 - __main__ - INFO - Evaluating model...
+2025-03-03 20:31:17,909 - __main__ - INFO - Final Test RMSE Loss: 69.0183
+2025-03-03 20:31:30,698 - __main__ - INFO - Model saved to ./outputs/regression_neural_network.pth
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.111682  0.666215  0.334189
+c_delta_y  5.313941 -0.039221  2.305199
+c_std_z    0.061219  0.937686  0.247425
+c_std_y    0.248141  0.913311  0.498137
+                    mse           r2         rmse
+c_delta_z  9.420423e+02     0.589627    30.692707
+c_delta_y  4.229589e+06 -4990.897884  2056.596433
+c_std_z    2.826354e+02     0.876957    16.811764
+c_std_y    4.061323e+02     0.872326    20.152725

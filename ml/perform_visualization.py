@@ -171,7 +171,7 @@ def performance_visualizations(y_pred, y_test):
         # axes[row, col].scatter(y_test[target], y_pred[target], alpha=0.5)
         # axes[row, col].plot([y_test[target].min(), y_test[target].max()],
         #                         [y_test[target].min(), y_test[target].max()], 'r--', lw=2)
-        axes[row, col].scatter([y_test[target].min(), y_test[target].max()],
+        axes[row, col].plot([y_test[target].min(), y_test[target].max()],
                                 [y_test[target].min(), y_test[target].max()], 'r--', lw=2)
         axes[row, col].set_title(f'{target}')
         axes[row, col].set_xlabel('True, m')
@@ -184,3 +184,32 @@ def performance_visualizations(y_pred, y_test):
     metrics_df = metrics_df.map(lambda x: x[0] if isinstance(x, list) else x)
     metrics_df = metrics_df.astype(float)
     print(metrics_df)
+
+
+def feature_importances_sklearn(models_dict, y, feature_columns):
+    shape_col_t = 2        
+    shape_row_t = 2
+    fig, axes = plt.subplots(shape_row_t, shape_col_t, figsize=(10, 10)) 
+    sns.set_theme(style="whitegrid")
+    for idx, col in enumerate(y.columns):
+        row = idx // shape_col_t
+        col_idx = idx % shape_row_t
+        feature_importance = models_dict[col].feature_importances_
+        sorted_idx = np.argsort(feature_importance)
+        sns.barplot(x = feature_importance[sorted_idx], y=np.array(feature_columns)[sorted_idx], ax=axes[row, col_idx])
+        # axes[row, col_idx].set_yticks(range(len(sorted_idx)), np.array(X_test.columns)[sorted_idx])
+        axes[row, col_idx].set_title(f'Feature importance {col}')
+
+def feature_importances_catboost(models_dict, target_columns, feature_columns):
+    shape_col_t = 2        
+    shape_row_t = 2
+    fig, axes = plt.subplots(shape_row_t, shape_col_t, figsize=(10, 10)) 
+    sns.set_theme(style="whitegrid")
+    for idx, col in enumerate(target_columns):
+        row = idx // shape_col_t
+        col_idx = idx % shape_row_t
+        feature_importance = models_dict[col].get_feature_importance()
+        sorted_idx = np.argsort(feature_importance)
+        sns.barplot(x = feature_importance[sorted_idx], y=np.array(feature_columns)[sorted_idx], ax=axes[row, col_idx])
+        # axes[row, col_idx].set_yticks(range(len(sorted_idx)), np.array(X_test.columns)[sorted_idx])
+        axes[row, col_idx].set_title(f'Feature importance {col}')

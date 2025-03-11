@@ -1,0 +1,361 @@
+2025-03-09 20:57:12,451 - __main__ - INFO - Loading data...
+2025-03-09 20:57:15,058 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-09 20:57:15,058 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-09 20:57:17,353 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-09 20:57:18,300 - __main__ - INFO - Training on: cuda
+2025-03-09 20:57:18,300 - __main__ - INFO - Starting training...
+2025-03-09 20:57:38,418 - __main__ - INFO - Saved best model with validation loss: 1.3204
+2025-03-09 20:57:58,565 - __main__ - INFO - Saved best model with validation loss: 1.3186
+2025-03-09 21:00:45,431 - __main__ - INFO - Epoch [10/10], Train Loss: 0.3178, Val Loss: 1.3726, LR: 0.000500
+2025-03-09 21:00:46,235 - __main__ - INFO - Training history plot saved to ./outputs_10_03_2025/training_history.png
+2025-03-09 21:00:46,235 - __main__ - INFO - Evaluating model...
+2025-03-09 21:00:46,322 - __main__ - INFO - Loaded best model with validation loss: 1.318579912185669
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-09 21:00:59,201 - __main__ - INFO - Final Test RMSE Loss: 69.0227
+2025-03-09 21:01:11,348 - __main__ - INFO - Calculating SHAP values for feature importance...
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.120141  0.640934  0.346614
+c_delta_y  6.641744 -0.298893  2.577158
+c_std_z    0.042775  0.956460  0.206821
+c_std_y    0.222974  0.922103  0.472202
+                   mse        r2       rmse
+c_delta_z   992.092291  0.567824  31.497497
+c_delta_y  3956.346087 -3.669408  62.899492
+c_std_z     298.976498  0.869843  17.290937
+c_std_y     441.930312  0.861072  21.022139
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 728, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 706, in main
+    feature_importance = plot_feature_importance(
+  File "/app/nse/nn/perseptron.py", line 591, in plot_feature_importance
+    shap.plots.bar(shap_values)
+  File "/usr/local/lib/python3.10/dist-packages/shap/plots/_bar.py", line 91, in bar
+    raise TypeError(emsg)
+TypeError: The shap_values argument must be an Explanation object, Cohorts object, or dictionary of Explanation objects!
+2025-03-09 21:03:25,576 - __main__ - INFO - Loading data...
+2025-03-09 21:03:28,179 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-09 21:03:28,179 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-09 21:03:30,471 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-09 21:03:31,194 - __main__ - INFO - Training on: cuda
+2025-03-09 21:03:31,194 - __main__ - INFO - Starting training...
+2025-03-09 21:03:52,945 - __main__ - INFO - Saved best model with validation loss: 1.3204
+2025-03-09 21:04:13,176 - __main__ - INFO - Saved best model with validation loss: 1.3186
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 728, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 671, in main
+    metrics = trainer.train(
+  File "/app/nse/nn/perseptron.py", line 419, in train
+    outputs = self.model(batch_X)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/app/nse/nn/perseptron.py", line 112, in forward
+    return self.model(x)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/container.py", line 249, in forward
+    input = module(input)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+KeyboardInterrupt
+2025-03-09 21:06:14,701 - __main__ - INFO - Loading data...
+2025-03-09 21:06:17,310 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-09 21:06:17,310 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-09 21:06:19,623 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-09 21:06:20,566 - __main__ - INFO - Training on: cuda
+2025-03-09 21:06:20,566 - __main__ - INFO - Starting training...
+2025-03-09 21:06:41,169 - __main__ - INFO - Saved best model with validation loss: 1.3204
+2025-03-09 21:07:00,912 - __main__ - INFO - Saved best model with validation loss: 1.3186
+2025-03-09 21:09:30,952 - __main__ - INFO - Epoch [10/10], Train Loss: 0.3178, Val Loss: 1.3726, LR: 0.000500
+2025-03-09 21:09:31,734 - __main__ - INFO - Training history plot saved to ./outputs_10_03_2025/training_history.png
+2025-03-09 21:09:31,734 - __main__ - INFO - Evaluating model...
+2025-03-09 21:09:31,758 - __main__ - INFO - Loaded best model with validation loss: 1.318579912185669
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-09 21:09:44,732 - __main__ - INFO - Final Test RMSE Loss: 69.0227
+2025-03-09 21:09:56,996 - __main__ - INFO - Calculating SHAP values for feature importance...
+2025-03-09 21:55:41,946 - __main__ - INFO - Feature importance plot saved to ./outputs_10_03_2025/feature_importance.png
+/app/nse/nn/perseptron.py:600: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(combined_shap_values, X_test_sample, feature_names=feature_names, show=False)
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.120141  0.640934  0.346614
+c_delta_y  6.641744 -0.298893  2.577158
+c_std_z    0.042775  0.956460  0.206821
+c_std_y    0.222974  0.922103  0.472202
+                   mse        r2       rmse
+c_delta_z   992.092291  0.567824  31.497497
+c_delta_y  3956.346087 -3.669408  62.899492
+c_std_z     298.976498  0.869843  17.290937
+c_std_y     441.930312  0.861072  21.022139
+[[0.03004326 0.18950451 0.02553076 0.05418442]
+ [0.24135894 0.83364738 0.51314228 0.77828319]
+ [0.11809212 0.30690782 0.23003894 0.43997501]
+ [0.00584657 0.0294682  0.01284161 0.01676097]
+ [0.02960367 0.18063391 0.03044933 0.0566294 ]
+ [0.02989579 0.20301532 0.03594988 0.05301907]
+ [0.0713877  0.24595145 0.19146959 0.28605668]
+ [0.13744599 0.35677272 0.37719668 0.41852998]
+ [0.12893731 0.34958949 0.30717622 0.69150845]]
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 728, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 706, in main
+    feature_importance = plot_feature_importance(
+  File "/app/nse/nn/perseptron.py", line 600, in plot_feature_importance
+    shap.summary_plot(combined_shap_values, X_test_sample, feature_names=feature_names, show=False)
+  File "/usr/local/lib/python3.10/dist-packages/shap/plots/_beeswarm.py", line 659, in summary_legacy
+    assert num_features == features.shape[1], shape_msg
+AssertionError: The shape of the shap_values matrix does not match the shape of the provided data matrix.
+2025-03-10 09:25:24,306 - __main__ - INFO - Loading data...
+2025-03-10 09:25:26,883 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-10 09:25:26,884 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-10 09:25:29,163 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-10 09:25:30,385 - __main__ - INFO - Training on: cuda
+2025-03-10 09:25:30,386 - __main__ - INFO - Starting training...
+2025-03-10 09:25:51,431 - __main__ - INFO - Saved best model with validation loss: 1.3204
+2025-03-10 09:26:11,391 - __main__ - INFO - Saved best model with validation loss: 1.3186
+2025-03-10 09:28:54,780 - __main__ - INFO - Epoch [10/10], Train Loss: 0.3178, Val Loss: 1.3726, LR: 0.000500
+2025-03-10 09:28:55,595 - __main__ - INFO - Training history plot saved to ./outputs_10_03_2025/training_history.png
+2025-03-10 09:28:55,595 - __main__ - INFO - Evaluating model...
+2025-03-10 09:28:55,620 - __main__ - INFO - Loaded best model with validation loss: 1.318579912185669
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-10 09:29:08,797 - __main__ - INFO - Final Test RMSE Loss: 69.0227
+2025-03-10 09:29:21,178 - __main__ - INFO - Calculating SHAP values for feature importance...
+2025-03-10 09:30:11,312 - __main__ - INFO - Feature importance plot saved to ./outputs_10_03_2025/feature_importance.png
+/app/nse/nn/perseptron.py:600: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(combined_shap_values, X_test_sample, feature_names=feature_names, show=False)
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.120141  0.640934  0.346614
+c_delta_y  6.641744 -0.298893  2.577158
+c_std_z    0.042775  0.956460  0.206821
+c_std_y    0.222974  0.922103  0.472202
+                   mse        r2       rmse
+c_delta_z   992.092291  0.567824  31.497497
+c_delta_y  3956.346087 -3.669408  62.899492
+c_std_z     298.976498  0.869843  17.290937
+c_std_y     441.930312  0.861072  21.022139
+(1000, 9, 4)
+[[0.03138574 0.18440425 0.02524496 0.05363997]
+ [0.2401898  0.82907236 0.51239863 0.76971671]
+ [0.11195458 0.30808003 0.22027399 0.43083406]
+ [0.00605746 0.02846459 0.01325393 0.01717775]
+ [0.02951445 0.18263389 0.0300553  0.05728789]
+ [0.03086502 0.21259685 0.03389278 0.05246494]
+ [0.06520715 0.2475301  0.1852784  0.27169362]
+ [0.13627819 0.34512454 0.36003742 0.3883761 ]
+ [0.12708491 0.34329912 0.31220091 0.69655338]]
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 728, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 706, in main
+    feature_importance = plot_feature_importance(
+  File "/app/nse/nn/perseptron.py", line 600, in plot_feature_importance
+    shap.summary_plot(combined_shap_values, X_test_sample, feature_names=feature_names, show=False)
+  File "/usr/local/lib/python3.10/dist-packages/shap/plots/_beeswarm.py", line 659, in summary_legacy
+    assert num_features == features.shape[1], shape_msg
+AssertionError: The shape of the shap_values matrix does not match the shape of the provided data matrix.
+2025-03-10 09:48:39,138 - __main__ - INFO - Loading data...
+2025-03-10 09:48:41,751 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-10 09:48:41,751 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-10 09:48:44,042 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-10 09:48:44,796 - __main__ - INFO - Training on: cuda
+2025-03-10 09:48:44,796 - __main__ - INFO - Starting training...
+2025-03-10 09:49:05,535 - __main__ - INFO - Saved best model with validation loss: 1.3204
+2025-03-10 09:49:25,468 - __main__ - INFO - Saved best model with validation loss: 1.3186
+2025-03-10 09:52:01,935 - __main__ - INFO - Epoch [10/10], Train Loss: 0.3178, Val Loss: 1.3726, LR: 0.000500
+2025-03-10 09:52:02,714 - __main__ - INFO - Training history plot saved to ./outputs_10_03_2025/training_history.png
+2025-03-10 09:52:02,714 - __main__ - INFO - Evaluating model...
+2025-03-10 09:52:02,791 - __main__ - INFO - Loaded best model with validation loss: 1.318579912185669
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-10 09:52:15,794 - __main__ - INFO - Final Test RMSE Loss: 69.0227
+2025-03-10 09:52:27,972 - __main__ - INFO - Calculating SHAP values for feature importance...
+2025-03-10 09:53:14,181 - __main__ - INFO - Feature importance plot saved to ./outputs_10_03_2025/feature_importance.png
+2025-03-10 09:53:14,235 - __main__ - INFO - Model saved to ./outputs_10_03_2025/regression_neural_network.pth
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.120141  0.640934  0.346614
+c_delta_y  6.641744 -0.298893  2.577158
+c_std_z    0.042775  0.956460  0.206821
+c_std_y    0.222974  0.922103  0.472202
+                   mse        r2       rmse
+c_delta_z   992.092291  0.567824  31.497497
+c_delta_y  3956.346087 -3.669408  62.899492
+c_std_z     298.976498  0.869843  17.290937
+c_std_y     441.930312  0.861072  21.022139
+              Feature  Importance
+1                   z    0.240190
+7              T_grad    0.136278
+8           distances    0.127085
+2                   u    0.111955
+6  sensible_heat_flux    0.065207
+              Feature  Importance
+1                   z    0.829072
+7              T_grad    0.345125
+8           distances    0.343299
+2                   u    0.308080
+6  sensible_heat_flux    0.247530
+              Feature  Importance
+1                   z    0.512399
+7              T_grad    0.360037
+8           distances    0.312201
+2                   u    0.220274
+6  sensible_heat_flux    0.185278
+              Feature  Importance
+1                   z    0.769717
+8           distances    0.696553
+2                   u    0.430834
+7              T_grad    0.388376
+6  sensible_heat_flux    0.271694
+2025-03-10 10:03:17,611 - __main__ - INFO - Loading data...
+2025-03-10 10:03:20,234 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-10 10:03:20,235 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-10 10:03:22,512 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-10 10:03:23,365 - __main__ - INFO - Training on: cuda
+2025-03-10 10:03:23,365 - __main__ - INFO - Starting training...
+2025-03-10 10:03:43,703 - __main__ - INFO - Saved best model with validation loss: 1.3204
+2025-03-10 10:04:02,197 - __main__ - INFO - Saved best model with validation loss: 1.3186
+2025-03-10 10:06:40,166 - __main__ - INFO - Epoch [10/10], Train Loss: 0.3178, Val Loss: 1.3726, LR: 0.000500
+2025-03-10 10:06:40,966 - __main__ - INFO - Training history plot saved to ./outputs_10_03_2025/training_history.png
+2025-03-10 10:06:40,966 - __main__ - INFO - Evaluating model...
+2025-03-10 10:06:41,052 - __main__ - INFO - Loaded best model with validation loss: 1.318579912185669
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-10 10:06:53,919 - __main__ - INFO - Final Test RMSE Loss: 69.0227
+2025-03-10 10:07:06,063 - __main__ - INFO - Calculating SHAP values for feature importance...
+/app/nse/nn/perseptron.py:594: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(combined_shap_values, X_test_sample, feature_names=feature_names, show=False)
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.120141  0.640934  0.346614
+c_delta_y  6.641744 -0.298893  2.577158
+c_std_z    0.042775  0.956460  0.206821
+c_std_y    0.222974  0.922103  0.472202
+                   mse        r2       rmse
+c_delta_z   992.092291  0.567824  31.497497
+c_delta_y  3956.346087 -3.669408  62.899492
+c_std_z     298.976498  0.869843  17.290937
+c_std_y     441.930312  0.861072  21.022139
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 748, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 725, in main
+    feature_importance = plot_feature_importance(
+  File "/app/nse/nn/perseptron.py", line 594, in plot_feature_importance
+    shap.summary_plot(combined_shap_values, X_test_sample, feature_names=feature_names, show=False)
+  File "/usr/local/lib/python3.10/dist-packages/shap/plots/_beeswarm.py", line 616, in summary_legacy
+    assert len(shap_values.shape) != 1, "Summary plots need a matrix of shap_values, not a vector."
+AssertionError: Summary plots need a matrix of shap_values, not a vector.
+2025-03-10 10:10:18,153 - __main__ - INFO - Loading data...
+2025-03-10 10:10:20,773 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-10 10:10:20,773 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-10 10:10:23,070 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-10 10:10:23,808 - __main__ - INFO - Training on: cuda
+2025-03-10 10:10:23,808 - __main__ - INFO - Starting training...
+2025-03-10 10:10:44,022 - __main__ - INFO - Saved best model with validation loss: 1.3204
+2025-03-10 10:11:04,080 - __main__ - INFO - Saved best model with validation loss: 1.3186
+2025-03-10 10:13:42,890 - __main__ - INFO - Epoch [10/10], Train Loss: 0.3178, Val Loss: 1.3726, LR: 0.000500
+2025-03-10 10:13:43,669 - __main__ - INFO - Training history plot saved to ./outputs_10_03_2025/training_history.png
+2025-03-10 10:13:43,669 - __main__ - INFO - Evaluating model...
+2025-03-10 10:13:43,693 - __main__ - INFO - Loaded best model with validation loss: 1.318579912185669
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-10 10:13:56,654 - __main__ - INFO - Final Test RMSE Loss: 69.0227
+2025-03-10 10:14:08,834 - __main__ - INFO - Calculating SHAP values for feature importance...
+/app/nse/nn/perseptron.py:594: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(shap_values_tmp, X_test_sample, feature_names=feature_names, show=False)
+/app/nse/nn/perseptron.py:594: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(shap_values_tmp, X_test_sample, feature_names=feature_names, show=False)
+/app/nse/nn/perseptron.py:594: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(shap_values_tmp, X_test_sample, feature_names=feature_names, show=False)
+/app/nse/nn/perseptron.py:594: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(shap_values_tmp, X_test_sample, feature_names=feature_names, show=False)
+2025-03-10 10:14:58,608 - __main__ - INFO - Feature importance plot saved to ./outputs_10_03_2025/feature_importance.png
+2025-03-10 10:14:58,629 - __main__ - INFO - Model saved to ./outputs_10_03_2025/regression_neural_network.pth
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.120141  0.640934  0.346614
+c_delta_y  6.641744 -0.298893  2.577158
+c_std_z    0.042775  0.956460  0.206821
+c_std_y    0.222974  0.922103  0.472202
+                   mse        r2       rmse
+c_delta_z   992.092291  0.567824  31.497497
+c_delta_y  3956.346087 -3.669408  62.899492
+c_std_z     298.976498  0.869843  17.290937
+c_std_y     441.930312  0.861072  21.022139

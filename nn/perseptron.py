@@ -3,7 +3,7 @@ import re
 import logging
 from pathlib import Path
 from typing import Tuple, List, Dict, Union, Optional
-
+import shap
 import torch
 import torch.nn as nn
 import numpy as np
@@ -110,132 +110,6 @@ class RegressionNet(nn.Module):
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.model(x)
-
-
-class ModelTrainer:
-    def __init__(
-        self,
-        model: nn.Module,
-        criterion: nn.Module = None,
-        learning_rate: float = 1e-3,
-        device: str = None
-    ):
-        assert(torch.cuda.is_available())
-        self.device = torch.device('cuda')
-        self.model = model.to(self.device)
-        self.criterion = criterion if criterion else RMSELoss()
-        self.optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-        logger.info(f"Training on: {self.device}")
-    
-    def train(
-        self,
-        X_train: np.ndarray,
-        y_train: pd.DataFrame,
-        epochs: int = 100,
-        batch_size: int = 256,
-        validation_data: Tuple[np.ndarray, pd.DataFrame] = None,
-        early_stopping_patience: int = None
-    ) -> Dict[str, List[float]]:
-        # Convert data to tensors
-        X_train_tensor = torch.FloatTensor(X_train.to_numpy()).to(self.device)
-        y_train_tensor = torch.FloatTensor(y_train.to_numpy()).to(self.device)
-        
-        # Create data loader
-        dataset = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
-        dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
-        
-        # Prepare validation data if provided
-        if validation_data:
-            X_val, y_val = validation_data
-            X_val_tensor = torch.FloatTensor(X_val.to_numpy()).to(self.device)
-            y_val_tensor = torch.FloatTensor(y_val.to_numpy()).to(self.device)
-        
-        # Training metrics
-        metrics = {
-            'train_loss': [],
-            'val_loss': [] if validation_data else None
-        }
-        
-        best_val_loss = float('inf')
-        patience_counter = 0
-        
-        # Training loop
-        for epoch in range(epochs):
-            # Training phase
-            self.model.train()
-            epoch_loss = 0.0
-            
-            for batch_X, batch_y in dataloader:
-                # Forward pass
-                outputs = self.model(batch_X)
-                loss = self.criterion(outputs, batch_y)
-                
-                # Backward pass and optimization
-                self.optimizer.zero_grad()
-                loss.backward()
-                self.optimizer.step()
-                
-                epoch_loss += loss.item()
-            
-            # Calculate average loss for the epoch
-            avg_train_loss = epoch_loss / len(dataloader)
-            metrics['train_loss'].append(avg_train_loss)
-            
-            # Validation phase
-            if validation_data:
-                self.model.eval()
-                with torch.no_grad():
-                    val_outputs = self.model(X_val_tensor)
-                    val_loss = self.criterion(val_outputs, y_val_tensor).item()
-                    metrics['val_loss'].append(val_loss)
-                
-                # Early stopping check
-                if early_stopping_patience:
-                    if val_loss < best_val_loss:
-                        best_val_loss = val_loss
-                        patience_counter = 0
-                    else:
-                        patience_counter += 1
-                        if patience_counter >= early_stopping_patience:
-                            logger.info(f"Early stopping triggered at epoch {epoch+1}")
-                            break
-                # if val_loss < best_val_loss:
-                #     best_val_loss = val_loss
-                #     torch.save()
-            # Print progress
-            if (epoch + 1) % 10 == 0:
-                log_msg = f'Epoch [{epoch+1}/{epochs}], Train Loss: {avg_train_loss:.4f}'
-                if validation_data:
-                    log_msg += f', Val Loss: {val_loss:.4f}'
-                logger.info(log_msg)
-        
-        return metrics
-    
-    def evaluate(self, X_test: np.ndarray, y_test: pd.DataFrame) -> Tuple[pd.DataFrame, float]:
-        self.model.eval()
-        with torch.no_grad():
-            X_test_tensor = torch.FloatTensor(X_test.to_numpy()).to(self.device)
-            y_test_tensor = torch.FloatTensor(y_test.to_numpy()).to(self.device)
-            
-            test_outputs = self.model(X_test_tensor)
-            
-            rmse_loss = self.criterion(test_outputs, y_test_tensor).item()
-            
-            # Convert predictions to DataFrame
-            y_pred = pd.DataFrame(test_outputs.cpu().numpy(), columns=y_test.columns)
-            
-        return y_pred, rmse_loss
-    
-    def save_model(self, path: str, metadata: Dict = None):
-        save_dict = {
-            'model_state_dict': self.model.state_dict(),
-        }
-        
-        if metadata:
-            save_dict.update(metadata)
-        
-        torch.save(save_dict, path)
-        logger.info(f"Model saved to {path}")
 
 
 class DataLoader:
@@ -389,9 +263,10 @@ class DataLoader:
         X, y = DataLoader.del_outs(X, y)
 
         # Feature scaling
-        # feature_scaler = StandardScaler()
+        feature_scaler = StandardScaler()
         # X_scaled = feature_scaler.fit_transform(X)
         target_preprocessor = TargetPreprocessor()
+
         target_preprocessor.fit(y)
 
         if val_size and eval_size:
@@ -400,6 +275,15 @@ class DataLoader:
             X_test.drop(columns=["experiment_num", "Tracer"], inplace=True)
             X_val.drop(columns=["experiment_num", "Tracer"], inplace=True)
             X_eval.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            X_train_np = feature_scaler.fit_transform(X_train)
+            X_val_np = feature_scaler.transform(X_val)
+            X_eval_np = feature_scaler.transform(X_eval)
+            X_test_np = feature_scaler.transform(X_test)
+            X_train = pd.DataFrame(data=X_train_np, columns=X_train.columns)
+            X_val = pd.DataFrame(data=X_val_np, columns=X_val.columns)
+            X_eval = pd.DataFrame(data=X_eval_np, columns=X_eval.columns)
+            X_test = pd.DataFrame(data=X_test_np, columns=X_test.columns)
+
             y_train_transformed = target_preprocessor.transform(y_train)
             y_val_transformed = target_preprocessor.transform(y_val)
             y_eval_transformed = target_preprocessor.transform(y_eval)
@@ -412,7 +296,7 @@ class DataLoader:
                 'y_val': y_val_transformed,
                 'y_eval': y_eval_transformed,
                 'y_test': y_test,
-                # 'feature_scaler': feature_scaler,
+                'feature_scaler': feature_scaler,
                 'target_preprocessor': target_preprocessor
             }
         elif val_size:
@@ -420,6 +304,13 @@ class DataLoader:
             X_train.drop(columns=["experiment_num", "Tracer"], inplace=True)
             X_test.drop(columns=["experiment_num", "Tracer"], inplace=True)
             X_val.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            X_train_np = feature_scaler.fit_transform(X_train)
+            X_val_np = feature_scaler.transform(X_val)
+            X_test_np = feature_scaler.transform(X_test)
+            X_train = pd.DataFrame(data=X_train_np, columns=X_train.columns)
+            X_val = pd.DataFrame(data=X_val_np, columns=X_val.columns)
+            X_test = pd.DataFrame(data=X_test_np, columns=X_test.columns)
+
             y_train_transformed = target_preprocessor.transform(y_train)
             y_val_transformed = target_preprocessor.transform(y_val)
             return {
@@ -429,41 +320,289 @@ class DataLoader:
                 'y_train': y_train_transformed,
                 'y_val': y_val_transformed,
                 'y_test': y_test,
+                'feature_scaler': feature_scaler,
                 'target_preprocessor': target_preprocessor
             }
         else:
             X_train, X_test, y_train, y_test = DataLoader.data_split(X, y, test_size, random_seed = random_seed)
             X_train.drop(columns=["experiment_num", "Tracer"], inplace=True)
             X_test.drop(columns=["experiment_num", "Tracer"], inplace=True)
+            X_train_np = feature_scaler.fit_transform(X_train)
+            X_test_np = feature_scaler.transform(X_test)
+            X_train = pd.DataFrame(data=X_train_np, columns=X_train.columns)
+            X_test = pd.DataFrame(data=X_test_np, columns=X_test.columns)
+
+
             y_train_transformed = target_preprocessor.transform(y_train)
             return {
                 'X_train': X_train,
                 'X_test': X_test,
                 'y_train': y_train_transformed,
                 'y_test': y_test,
+                'feature_scaler': feature_scaler,
                 'target_preprocessor': target_preprocessor
             }
 
+class ModelTrainer:
+    def __init__(
+        self,
+        model: nn.Module,
+        criterion: nn.Module = None,
+        learning_rate: float = 1e-3,
+        device: str = None,
+        output_dir: str = './model_checkpoints'
+    ):
+        assert(torch.cuda.is_available())
+        self.device = torch.device('cuda')
+        self.model = model.to(self.device)
+        self.criterion = criterion if criterion else RMSELoss()
+        
+        # Adaptive learning rate with ReduceLROnPlateau
+        self.optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            self.optimizer, 
+            mode='min', 
+            factor=0.5,  # Reduce learning rate by half
+            patience=5,  # Wait for 5 epochs without improvement
+            min_lr=1e-6,  # Minimum learning rate
+            verbose=True
+        )
+        
+        # Model checkpoint directory
+        self.output_dir = output_dir
+        os.makedirs(self.output_dir, exist_ok=True)
+        
+        logger.info(f"Training on: {self.device}")
+    
+    def train(
+        self,
+        X_train: np.ndarray,
+        y_train: pd.DataFrame,
+        epochs: int = 100,
+        batch_size: int = 256,
+        validation_data: Tuple[np.ndarray, pd.DataFrame] = None,
+        early_stopping_patience: int = None
+    ) -> Dict[str, List[float]]:
+        # Convert data to tensors
+        X_train_tensor = torch.FloatTensor(X_train.to_numpy()).to(self.device)
+        y_train_tensor = torch.FloatTensor(y_train.to_numpy()).to(self.device)
+        
+        # Create data loader
+        dataset = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
+        dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
+        
+        # Prepare validation data if provided
+        if validation_data:
+            X_val, y_val = validation_data
+            X_val_tensor = torch.FloatTensor(X_val.to_numpy()).to(self.device)
+            y_val_tensor = torch.FloatTensor(y_val.to_numpy()).to(self.device)
+        
+        # Training metrics
+        metrics = {
+            'train_loss': [],
+            'val_loss': [] if validation_data else None,
+            'learning_rates': []
+        }
+        
+        best_val_loss = float('inf')
+        patience_counter = 0
+        best_model_path = os.path.join(self.output_dir, 'best_model.pth')
+        
+        # Training loop
+        for epoch in range(epochs):
+            # Training phase
+            self.model.train()
+            epoch_loss = 0.0
+            
+            for batch_X, batch_y in dataloader:
+                # Forward pass
+                outputs = self.model(batch_X)
+                loss = self.criterion(outputs, batch_y)
+                
+                # Backward pass and optimization
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
+                
+                epoch_loss += loss.item()
+            
+            # Calculate average loss for the epoch
+            avg_train_loss = epoch_loss / len(dataloader)
+            metrics['train_loss'].append(avg_train_loss)
+            
+            # Log current learning rate
+            current_lr = self.optimizer.param_groups[0]['lr']
+            metrics['learning_rates'].append(current_lr)
+            
+            # Validation phase
+            if validation_data:
+                self.model.eval()
+                with torch.no_grad():
+                    val_outputs = self.model(X_val_tensor)
+                    val_loss = self.criterion(val_outputs, y_val_tensor).item()
+                    metrics['val_loss'].append(val_loss)
+                
+                # Adaptive learning rate adjustment
+                self.scheduler.step(val_loss)
+                
+                # Model checkpointing
+                if val_loss < best_val_loss:
+                    best_val_loss = val_loss
+                    patience_counter = 0
+                    
+                    # Save the best model
+                    torch.save({
+                        'model_state_dict': self.model.state_dict(),
+                        'optimizer_state_dict': self.optimizer.state_dict(),
+                        'best_val_loss': best_val_loss,
+                        'epoch': epoch
+                    }, best_model_path)
+                    logger.info(f"Saved best model with validation loss: {best_val_loss:.4f}")
+                else:
+                    patience_counter += 1
+                
+                # Early stopping
+                if early_stopping_patience and patience_counter >= early_stopping_patience:
+                    logger.info(f"Early stopping triggered at epoch {epoch+1}")
+                    break
+            
+            # Print progress
+            if (epoch + 1) % 10 == 0:
+                log_msg = f'Epoch [{epoch+1}/{epochs}], Train Loss: {avg_train_loss:.4f}'
+                if validation_data:
+                    log_msg += f', Val Loss: {val_loss:.4f}, LR: {current_lr:.6f}'
+                logger.info(log_msg)
+        
+        return metrics
+    
+    def evaluate(self, X_test: np.ndarray, y_test: pd.DataFrame) -> Tuple[pd.DataFrame, float]:
+        # Load the best model if it exists
+        best_model_path = os.path.join(self.output_dir, 'best_model.pth')
+        if os.path.exists(best_model_path):
+            checkpoint = torch.load(best_model_path, weights_only=True)
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            logger.info(f"Loaded best model with validation loss: {checkpoint.get('best_val_loss', 'N/A')}")
+        
+        self.model.eval()
+        with torch.no_grad():
+            X_test_tensor = torch.FloatTensor(X_test.to_numpy()).to(self.device)
+            y_test_tensor = torch.FloatTensor(y_test.to_numpy()).to(self.device)
+            
+            test_outputs = self.model(X_test_tensor)
+            
+            rmse_loss = self.criterion(test_outputs, y_test_tensor).item()
+            
+            # Convert predictions to DataFrame
+            y_pred = pd.DataFrame(test_outputs.cpu().numpy(), columns=y_test.columns)
+            
+        return y_pred, rmse_loss
+    
+    def save_model(self, path: str, metadata: Dict = None):
+        save_dict = {
+            'model_state_dict': self.model.state_dict(),
+            'optimizer_state_dict': self.optimizer.state_dict(),
+        }
+        
+        if metadata:
+            save_dict.update(metadata)
+        
+        torch.save(save_dict, path)
+        logger.info(f"Model saved to {path}")
+
 
 def plot_training_history(metrics: Dict[str, List[float]], save_path: str = None):
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(12, 8))
     epochs = range(1, len(metrics['train_loss']) + 1)
     
+    # Loss subplot
+    plt.subplot(2, 1, 1)
     plt.plot(epochs, metrics['train_loss'], 'b-', label='Training Loss')
     if metrics.get('val_loss'):
         plt.plot(epochs, metrics['val_loss'], 'r-', label='Validation Loss')
-    
     plt.title('Training and Validation Loss')
     plt.xlabel('Epochs')
     plt.ylabel('RMSE Loss')
     plt.legend()
     plt.grid(True, alpha=0.3)
     
+    # Learning rate subplot
+    plt.subplot(2, 1, 2)
+    plt.plot(epochs, metrics['learning_rates'], 'g-')
+    plt.title('Learning Rate')
+    plt.xlabel('Epochs')
+    plt.ylabel('Learning Rate')
+    plt.yscale('log')
+    plt.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         logger.info(f"Training history plot saved to {save_path}")
     else:
         plt.show()
+
+def plot_eda(target: pd.DataFrame, filename: str) -> None:
+    fig, ax = plt.subplots()
+    target.hist(bins=50, ax=ax)
+    fig.savefig(filename)
+
+
+def plot_feature_importance(model, X_test, target_names, feature_names, save_path):
+    logger.info("Calculating SHAP values for feature importance...")
+    
+    # Set model to evaluation mode
+    model.eval()
+    
+    # Create SHAP explainer
+    background = X_test.sample(min(500, len(X_test)), random_state=42).to_numpy()
+    background_tensor = torch.FloatTensor(background).to(model.model[0].weight.device)
+    
+    # Define a prediction function for SHAP
+    def predict_fn(x):
+        x_tensor = torch.FloatTensor(x).to(model.model[0].weight.device)
+        with torch.no_grad():
+            return model(x_tensor).cpu().numpy()
+    
+    # Initialize the SHAP explainer
+    explainer = shap.DeepExplainer(model, background_tensor)
+    
+    # Calculate SHAP values
+    X_test_sample = X_test.sample(min(1000, len(X_test)), random_state=42).to_numpy()
+    shap_values = explainer.shap_values(torch.FloatTensor(X_test_sample).to(model.model[0].weight.device))
+    
+
+    sns.set_theme(style="whitegrid")
+    shape_col_t = 2        
+    shape_row_t = 2
+    fig, axes = plt.subplots(shape_row_t, shape_col_t, figsize=(12, 10)) 
+    for idx, col in enumerate(target_names):
+        row = idx // shape_col_t
+        col_idx = idx % shape_row_t
+        shap_values_tmp = shap_values[:, :, idx]
+        shap_values_tmp_abs = np.abs(shap_values_tmp)
+
+        combined_shap_values = np.mean(shap_values_tmp_abs, axis=0)
+        feature_importance = pd.DataFrame(list(zip(feature_names, combined_shap_values)), 
+                                      columns=['Feature', 'Importance'])
+        feature_importance.sort_values(by=['Importance'], ascending=False, inplace=True)
+        sns.barplot(x='Importance', y='Feature', data=feature_importance, ax=axes[row, col_idx])
+        axes[row, col_idx].set_title(f'Feature importance {col}')
+    plt.savefig(save_path, dpi=300)
+
+
+
+    logger.info(f"Feature importance plot saved to {save_path}")
+    
+    for idx, col in enumerate(target_names):
+        plt.figure(figsize=(6, 8))
+        shap_values_tmp = shap_values[:, :, idx]
+        shap.summary_plot(shap_values_tmp, X_test_sample, feature_names=feature_names, show=False)
+        summary_path = save_path.replace('.png', f'{col}_summary.png')
+        plt.savefig(summary_path, dpi=300, bbox_inches='tight')
+
+    logger.info(f"SHAP summary plot saved to {save_path}")    
+    return feature_importance
 
 
 def main():
@@ -482,16 +621,18 @@ def main():
             'output_dim': 4
         },
         'training_params': {
-            'learning_rate': 1e-4,
-            'epochs': 50,
+            'learning_rate': 1e-3,  # Increased from 1e-4
+            'epochs': 100,  # Increased from 50
             'batch_size': 128,
             'early_stopping_patience': 20
         },
-        'output_dir': './outputs'
+        'output_dir': './outputs_10_03_2025',
+        'model_checkpoints_dir': './model_checkpoints_09_03_2025'
     }
     
-    # Create output directory if it doesn't exist
+    # Create output directories
     os.makedirs(config['output_dir'], exist_ok=True)
+    os.makedirs(config['model_checkpoints_dir'], exist_ok=True)
     
     # Set random seeds for reproducibility
     torch.manual_seed(config['random_seed'])
@@ -511,12 +652,20 @@ def main():
         test_size = 0.2,
         val_size = 0.2)
     
+    plot_eda(pd.DataFrame(data["y_test"]), config['output_dir'] + "/target_test_transform.png")
+    plot_eda(pd.DataFrame(data["y_train"]), config['output_dir'] + "/target_train_transform.png")
+
+    
     # Initialize model
     logger.info("Initializing model...")
     model = RegressionNet(**config['model_params'])
     
-    # Initialize trainer
-    trainer = ModelTrainer(model, learning_rate=config['training_params']['learning_rate'])
+    # Initialize trainer with updated configuration
+    trainer = ModelTrainer(
+        model, 
+        learning_rate=config['training_params']['learning_rate'],
+        output_dir=config['model_checkpoints_dir']
+    )
     
     # Train model
     logger.info("Starting training...")
@@ -526,7 +675,7 @@ def main():
         epochs=config['training_params']['epochs'],
         batch_size=config['training_params']['batch_size'],
         validation_data=(data['X_val'], data['y_val']),
-        # early_stopping_patience=config['training_params']['early_stopping_patience']
+        early_stopping_patience=config['training_params']['early_stopping_patience']
     )
     
     # Plot and save training history
@@ -536,14 +685,17 @@ def main():
     logger.info("Evaluating model...")
     y_pred, rmse_loss = trainer.evaluate(data['X_test'], data['y_test'])
     
+    plot_eda(pd.DataFrame(y_pred), config['output_dir'] + "/target_pred_transform.png")
 
     y_test_transformed = data['target_preprocessor'].transform(data['y_test'].copy())
-    performance_visualizations(y_pred, y_test_transformed, filename_barplot = "nn_model_hist_transformed.png", 
-                                                filename_compare = "nn_model_transformed.png",
-                                                filename_text = "metrics_transformed.csv")
+
+    performance_visualizations(y_pred, y_test_transformed, filename_barplot = config['output_dir'] + "/nn_model_hist_transformed.png", 
+                                                filename_compare = config['output_dir'] + "/nn_model_transformed.png",
+                                                filename_text = config['output_dir'] + "/metrics_transformed.csv")
 
     # Inverse transform predictions
     y_pred_original = data['target_preprocessor'].inverse_transform(y_pred)
+    plot_eda(pd.DataFrame(y_pred_original), config['output_dir'] + "/target_pred.png")
     
     logger.info(f"Final Test RMSE Loss: {rmse_loss:.4f}")
     
@@ -551,16 +703,24 @@ def main():
     performance_visualizations(y_pred_original, data['y_test'], filename_barplot = "nn_model_hist.png", 
                                                 filename_compare = "nn_model.png",
                                                 filename_text = "metrics.csv")
-    
-    # Save model and metadata
+
+    feature_importance = plot_feature_importance(
+        model,
+        data['X_test'],
+        data['y_test'].columns,
+        data['X_test'].columns,
+        os.path.join(config['output_dir'], 'feature_importance.png')
+    )
+    # Save final model and metadata
     model_path = os.path.join(config['output_dir'], 'regression_neural_network.pth')
     trainer.save_model(
         model_path,
         metadata={
-            # 'feature_scaler': data['feature_scaler'],
+            'feature_scaler': data['feature_scaler'],
             'target_preprocessor': data['target_preprocessor'],
             'train_losses': metrics['train_loss'],
             'val_losses': metrics.get('val_loss'),
+            'learning_rates': metrics['learning_rates'],
             'config': config
         }
     )
