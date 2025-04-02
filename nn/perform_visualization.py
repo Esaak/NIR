@@ -8,8 +8,11 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.colors import Normalize 
 from scipy.interpolate import interpn
+sns.set_theme(font = 'serif')
 
 def perform_eda(X, y):
+    sns.set_context("talk")
+
     """Perform Exploratory Data Analysis"""
     # Feature distributions
     shape_col_f = 3
@@ -82,6 +85,8 @@ def density_scatter(x, y, ax=None, bins=20, cmap='viridis', **kwargs):
     return ax
 
 def perform_eda_short(X, y):
+    sns.set_context("talk")
+
     """Perform Exploratory Data Analysis without correlation"""
     # Feature distributions
     shape_col_f = 3
@@ -109,9 +114,13 @@ def perform_eda_short(X, y):
     plt.tight_layout()
     plt.show()
     
-def performance_visualizations(y_pred, y_test, filename_barplot = "nn_model_hist.png", 
+def performance_visualizations(y_pred, y_test, 
+                               transform = False,
+                               filename_barplot = "nn_model_hist.png", 
                                                 filename_compare = "nn_model.png",
                                                 filename_text = "metrics.csv"):
+    sns.set_context("talk")
+    
     metrics = {'mse': {}, 'r2': {}, 'rmse': {}}
     
     for target in y_test.columns:
@@ -149,7 +158,7 @@ def performance_visualizations(y_pred, y_test, filename_barplot = "nn_model_hist
     shape_row = y_test.shape[1] // shape_col + int(y_test.shape[1] % shape_col != 0) 
     
     fig, axes = plt.subplots(shape_row, shape_col, figsize=(6, 6))
-    fig.suptitle(f'True vs Predicted')
+    # fig.suptitle(f'True vs Predicted')
     for idx, target in enumerate(y_test.columns):
         row = idx // shape_row
         col = idx % shape_col
@@ -175,9 +184,24 @@ def performance_visualizations(y_pred, y_test, filename_barplot = "nn_model_hist
         # axes[row, col].scatter(y_test[target], y_pred[target], alpha=0.5)
         axes[row, col].plot([y_test[target].min(), y_test[target].max()],
                                 [y_test[target].min(), y_test[target].max()], 'r--', lw=2)
-        axes[row, col].set_title(f'{target}')
-        axes[row, col].set_xlabel('True, m')
-        axes[row, col].set_ylabel('Predicted, m')            
+        if target == 'c_delta_z':
+            axes[row, col].set_title(f'$\Delta_z$')
+        elif target == 'c_delta_y':
+            axes[row, col].set_title(f'$\Delta_y$')
+        elif target == 'c_std_z':
+            axes[row, col].set_title(f'$\sigma_z$')
+        elif target == 'c_std_y':
+            axes[row, col].set_title(f'$\sigma_y$')
+        else: 
+            axes[row, col].set_title(f'{target}')
+        if transform:  
+            axes[row, col].set_xlabel('Истина')
+            axes[row, col].set_ylabel('Прогноз')
+        else:
+            axes[row, col].set_xlabel('Истина, м')
+            axes[row, col].set_ylabel('Прогноз, м') 
+        # axes[row, col].set_xlabel('True, m')
+        # axes[row, col].set_ylabel('Predicted, m')            
     plt.tight_layout()
     plt.savefig(filename_compare)
     # plt.show()

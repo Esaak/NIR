@@ -1,0 +1,74 @@
+2025-03-12 23:24:46,581 - __main__ - INFO - Loading data...
+2025-03-12 23:24:54,446 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-12 23:24:54,446 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-12 23:24:56,969 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-12 23:24:59,720 - __main__ - INFO - Training on: cuda
+2025-03-12 23:24:59,721 - __main__ - INFO - Starting training...
+2025-03-12 23:25:14,163 - __main__ - INFO - Saved best model with validation loss: 1.2137
+2025-03-12 23:25:26,411 - __main__ - INFO - Saved best model with validation loss: 1.1559
+2025-03-12 23:25:38,760 - __main__ - INFO - Saved best model with validation loss: 1.1277
+2025-03-12 23:25:50,995 - __main__ - INFO - Saved best model with validation loss: 1.1080
+2025-03-12 23:26:03,322 - __main__ - INFO - Saved best model with validation loss: 1.0926
+2025-03-12 23:26:15,524 - __main__ - INFO - Saved best model with validation loss: 1.0803
+2025-03-12 23:26:27,858 - __main__ - INFO - Saved best model with validation loss: 1.0710
+2025-03-12 23:26:40,191 - __main__ - INFO - Saved best model with validation loss: 1.0645
+2025-03-12 23:26:52,400 - __main__ - INFO - Saved best model with validation loss: 1.0598
+2025-03-12 23:27:04,615 - __main__ - INFO - Saved best model with validation loss: 1.0565
+2025-03-12 23:27:04,615 - __main__ - INFO - Epoch [10/100], Train Loss: 0.9975, Val Loss: 1.0565, LR: 0.000100
+2025-03-12 23:27:16,941 - __main__ - INFO - Saved best model with validation loss: 1.0540
+2025-03-12 23:27:29,265 - __main__ - INFO - Saved best model with validation loss: 1.0521
+2025-03-12 23:27:41,461 - __main__ - INFO - Saved best model with validation loss: 1.0505
+2025-03-12 23:27:53,776 - __main__ - INFO - Saved best model with validation loss: 1.0491
+2025-03-12 23:28:05,971 - __main__ - INFO - Saved best model with validation loss: 1.0480
+2025-03-12 23:28:18,282 - __main__ - INFO - Saved best model with validation loss: 1.0471
+2025-03-12 23:28:30,495 - __main__ - INFO - Saved best model with validation loss: 1.0463
+2025-03-12 23:28:42,800 - __main__ - INFO - Saved best model with validation loss: 1.0456
+2025-03-12 23:28:55,078 - __main__ - INFO - Saved best model with validation loss: 1.0451
+2025-03-12 23:29:07,245 - __main__ - INFO - Saved best model with validation loss: 1.0447
+2025-03-12 23:29:07,245 - __main__ - INFO - Epoch [20/100], Train Loss: 0.9708, Val Loss: 1.0447, LR: 0.000100
+2025-03-12 23:29:19,408 - __main__ - INFO - Saved best model with validation loss: 1.0444
+2025-03-12 23:29:31,690 - __main__ - INFO - Saved best model with validation loss: 1.0441
+2025-03-12 23:29:43,961 - __main__ - INFO - Saved best model with validation loss: 1.0440
+2025-03-12 23:29:56,118 - __main__ - INFO - Saved best model with validation loss: 1.0439
+2025-03-12 23:30:08,404 - __main__ - INFO - Saved best model with validation loss: 1.0438
+2025-03-12 23:31:09,444 - __main__ - INFO - Epoch [30/100], Train Loss: 0.9567, Val Loss: 1.0442, LR: 0.000100
+2025-03-12 23:33:11,332 - __main__ - INFO - Epoch [40/100], Train Loss: 0.9437, Val Loss: 1.0443, LR: 0.000025
+2025-03-12 23:34:12,358 - __main__ - INFO - Early stopping triggered at epoch 45
+2025-03-12 23:34:13,429 - __main__ - INFO - Training history plot saved to ./outputs_11_03_2025/training_history.png
+2025-03-12 23:34:13,430 - __main__ - INFO - Evaluating model...
+2025-03-12 23:34:13,504 - __main__ - INFO - Loaded best model with validation loss: 1.0437854528427124
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:547: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-12 23:34:26,481 - __main__ - INFO - Final Test RMSE Loss: 69.0606
+2025-03-12 23:34:38,775 - __main__ - INFO - Calculating SHAP values for feature importance...
+2025-03-12 23:35:26,656 - __main__ - INFO - Feature importance plot saved to ./outputs_11_03_2025/feature_importance.png
+/app/nse/nn/perseptron.py:600: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(shap_values_tmp, X_test_sample, feature_names=feature_names, show=False)
+/app/nse/nn/perseptron.py:600: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(shap_values_tmp, X_test_sample, feature_names=feature_names, show=False)
+/app/nse/nn/perseptron.py:600: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(shap_values_tmp, X_test_sample, feature_names=feature_names, show=False)
+/app/nse/nn/perseptron.py:600: FutureWarning: The NumPy global RNG was seeded by calling `np.random.seed`. In a future version this function will no longer use the global RNG. Pass `rng` explicitly to opt-in to the new behaviour and silence this warning.
+  shap.summary_plot(shap_values_tmp, X_test_sample, feature_names=feature_names, show=False)
+2025-03-12 23:35:28,375 - __main__ - INFO - SHAP summary plot saved to ./outputs_11_03_2025/feature_importance.png
+2025-03-12 23:35:28,400 - __main__ - INFO - Model saved to ./outputs_11_03_2025/regression_neural_network.pth
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  0.118745  0.645107  0.344593
+c_delta_y  4.417065  0.136176  2.101682
+c_std_z    0.056668  0.942319  0.238050
+c_std_y    0.221392  0.922656  0.470523
+                   mse        r2       rmse
+c_delta_z  1095.526497  0.522766  33.098739
+c_delta_y   780.686404  0.078609  27.940766
+c_std_z     314.356228  0.863147  17.730094
+c_std_y     439.593508  0.861807  20.966485

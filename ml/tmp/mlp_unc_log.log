@@ -1,0 +1,134 @@
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+(2322432, 10) (2322432, 4)
+(2322432, 10) (2322432, 4)
+(2312849, 11) (2312849, 4)
+Split data...
+Split shapes: train: X(1669833, 11), y(1669833, 4), test: X(459344, 11), y(459344, 4), valid: X(183672, 11), y(183672, 4)
+Preprocess data...
+x
+Running ANN uncertainty estimation...
+Start calculate uncertainty for c_delta_z
+Epoch [10/50], Train Loss: 0.2367, Val Loss: 0.2964, LR: 0.001000
+Epoch [20/50], Train Loss: 0.2168, Val Loss: 0.2873, LR: 0.001000
+Epoch [30/50], Train Loss: 0.1881, Val Loss: 0.2964, LR: 0.000500
+Epoch [40/50], Train Loss: 0.1555, Val Loss: 0.2895, LR: 0.000250
+Epoch [50/50], Train Loss: 0.1293, Val Loss: 0.2902, LR: 0.000125
+Fitting bootstrap models:   0%|          | 0/10 [00:00<?, ?it/s]Fitting bootstrap models:  10%|█         | 1/10 [05:34<50:07, 334.12s/it]Fitting bootstrap models:  20%|██        | 2/10 [10:48<43:01, 322.72s/it]Fitting bootstrap models:  30%|███       | 3/10 [15:48<36:23, 311.95s/it]Fitting bootstrap models:  40%|████      | 4/10 [20:49<30:47, 307.93s/it]Fitting bootstrap models:  50%|█████     | 5/10 [28:33<30:21, 364.23s/it]Fitting bootstrap models:  60%|██████    | 6/10 [33:31<22:46, 341.70s/it]Fitting bootstrap models:  70%|███████   | 7/10 [38:30<16:23, 327.74s/it]Fitting bootstrap models:  80%|████████  | 8/10 [43:28<10:36, 318.24s/it]Fitting bootstrap models:  90%|█████████ | 9/10 [48:42<05:16, 316.78s/it]Fitting bootstrap models: 100%|██████████| 10/10 [53:55<00:00, 315.59s/it]Fitting bootstrap models: 100%|██████████| 10/10 [53:55<00:00, 323.52s/it]
+Epoch [10/50], Train Loss: 0.0535, Val Loss: 0.3376, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0411, Val Loss: 0.3431, LR: 0.000250
+Epoch [10/50], Train Loss: 0.0527, Val Loss: 0.3434, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0407, Val Loss: 0.3536, LR: 0.000250
+Epoch [10/50], Train Loss: 0.0553, Val Loss: 0.3536, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0418, Val Loss: 0.3623, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0557, Val Loss: 0.3540, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0421, Val Loss: 0.3612, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0575, Val Loss: 0.3304, LR: 0.001000
+Epoch [20/50], Train Loss: 0.0384, Val Loss: 0.3345, LR: 0.000500
+Epoch [30/50], Train Loss: 0.0318, Val Loss: 0.3430, LR: 0.000250
+Epoch [10/50], Train Loss: 0.0551, Val Loss: 0.3402, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0418, Val Loss: 0.3472, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0549, Val Loss: 0.3401, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0413, Val Loss: 0.3427, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0554, Val Loss: 0.3215, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0419, Val Loss: 0.3195, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0536, Val Loss: 0.3249, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0418, Val Loss: 0.3317, LR: 0.000250
+Epoch [10/50], Train Loss: 0.0544, Val Loss: 0.3515, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0424, Val Loss: 0.3522, LR: 0.000250
+Generating bootstrap predictions:   0%|          | 0/10 [00:00<?, ?it/s]Generating bootstrap predictions:  20%|██        | 2/10 [00:00<00:00, 19.53it/s]Generating bootstrap predictions:  40%|████      | 4/10 [00:00<00:00, 19.19it/s]Generating bootstrap predictions:  60%|██████    | 6/10 [00:00<00:00, 19.16it/s]Generating bootstrap predictions:  80%|████████  | 8/10 [00:00<00:00, 18.87it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 19.21it/s]
+MLP RMSE: 27.9179
+Interval coverage: 0.0000 (expected: 0.9500)
+Generating bootstrap predictions:   0%|          | 0/10 [00:00<?, ?it/s]Generating bootstrap predictions:  60%|██████    | 6/10 [00:00<00:00, 47.77it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 50.69it/s]
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Start calculate uncertainty for c_delta_y
+Epoch [10/50], Train Loss: 1.8312, Val Loss: 2.0322, LR: 0.000500
+Epoch [20/50], Train Loss: 1.6045, Val Loss: 2.2490, LR: 0.000250
+Fitting bootstrap models:   0%|          | 0/10 [00:00<?, ?it/s]Fitting bootstrap models:  10%|█         | 1/10 [05:00<45:02, 300.25s/it]Fitting bootstrap models:  20%|██        | 2/10 [09:59<39:56, 299.62s/it]Fitting bootstrap models:  30%|███       | 3/10 [14:59<35:00, 300.01s/it]Fitting bootstrap models:  40%|████      | 4/10 [20:00<30:00, 300.16s/it]Fitting bootstrap models:  50%|█████     | 5/10 [24:58<24:58, 299.60s/it]Fitting bootstrap models:  60%|██████    | 6/10 [29:57<19:57, 299.41s/it]Fitting bootstrap models:  70%|███████   | 7/10 [34:56<14:57, 299.01s/it]Fitting bootstrap models:  80%|████████  | 8/10 [39:53<09:57, 298.57s/it]Fitting bootstrap models:  90%|█████████ | 9/10 [44:56<04:59, 299.87s/it]Fitting bootstrap models: 100%|██████████| 10/10 [49:57<00:00, 300.08s/it]Fitting bootstrap models: 100%|██████████| 10/10 [49:57<00:00, 299.71s/it]
+Epoch [10/50], Train Loss: 0.5863, Val Loss: 2.6785, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4700, Val Loss: 2.7708, LR: 0.000125
+Epoch [10/50], Train Loss: 0.6061, Val Loss: 2.6610, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4839, Val Loss: 2.7074, LR: 0.000125
+Epoch [10/50], Train Loss: 0.6092, Val Loss: 2.7623, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4860, Val Loss: 2.8452, LR: 0.000125
+Epoch [10/50], Train Loss: 0.5825, Val Loss: 2.7252, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4609, Val Loss: 2.8481, LR: 0.000125
+Epoch [10/50], Train Loss: 0.5980, Val Loss: 2.4799, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4758, Val Loss: 2.5932, LR: 0.000125
+Epoch [10/50], Train Loss: 0.6112, Val Loss: 2.7436, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4836, Val Loss: 2.8076, LR: 0.000125
+Epoch [10/50], Train Loss: 0.5906, Val Loss: 2.6842, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4698, Val Loss: 2.8550, LR: 0.000125
+Epoch [10/50], Train Loss: 0.6094, Val Loss: 2.7746, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4895, Val Loss: 2.8964, LR: 0.000125
+Epoch [10/50], Train Loss: 0.6061, Val Loss: 2.5763, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4855, Val Loss: 2.6059, LR: 0.000125
+Epoch [10/50], Train Loss: 0.6029, Val Loss: 2.7170, LR: 0.000500
+Epoch [20/50], Train Loss: 0.4836, Val Loss: 2.8618, LR: 0.000125
+Generating bootstrap predictions:   0%|          | 0/10 [00:00<?, ?it/s]Generating bootstrap predictions:  20%|██        | 2/10 [00:00<00:00, 11.20it/s]Generating bootstrap predictions:  40%|████      | 4/10 [00:00<00:00, 11.41it/s]Generating bootstrap predictions:  60%|██████    | 6/10 [00:00<00:00, 10.82it/s]Generating bootstrap predictions:  80%|████████  | 8/10 [00:00<00:00, 11.16it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 10.52it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 10.77it/s]
+MLP RMSE: 170.3956
+Interval coverage: 0.0000 (expected: 0.9500)
+Generating bootstrap predictions:   0%|          | 0/10 [00:00<?, ?it/s]Generating bootstrap predictions:  20%|██        | 2/10 [00:00<00:00, 14.46it/s]Generating bootstrap predictions:  40%|████      | 4/10 [00:00<00:00, 14.99it/s]Generating bootstrap predictions:  60%|██████    | 6/10 [00:00<00:00, 14.22it/s]Generating bootstrap predictions:  80%|████████  | 8/10 [00:00<00:00, 15.16it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 15.43it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 15.11it/s]
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Start calculate uncertainty for c_std_z
+Epoch [10/50], Train Loss: 0.1896, Val Loss: 0.2436, LR: 0.001000
+Epoch [20/50], Train Loss: 0.1716, Val Loss: 0.2252, LR: 0.001000
+Epoch [30/50], Train Loss: 0.1372, Val Loss: 0.2018, LR: 0.000250
+Fitting bootstrap models:   0%|          | 0/10 [00:00<?, ?it/s]Fitting bootstrap models:  10%|█         | 1/10 [04:59<44:53, 299.27s/it]Fitting bootstrap models:  20%|██        | 2/10 [09:58<39:52, 299.03s/it]Fitting bootstrap models:  30%|███       | 3/10 [14:57<34:53, 299.02s/it]Fitting bootstrap models:  40%|████      | 4/10 [19:56<29:55, 299.29s/it]Fitting bootstrap models:  50%|█████     | 5/10 [24:57<24:58, 299.67s/it]Fitting bootstrap models:  60%|██████    | 6/10 [29:55<19:57, 299.25s/it]Fitting bootstrap models:  70%|███████   | 7/10 [34:54<14:57, 299.07s/it]Fitting bootstrap models:  80%|████████  | 8/10 [39:53<09:58, 299.16s/it]Fitting bootstrap models:  90%|█████████ | 9/10 [44:53<04:59, 299.22s/it]Fitting bootstrap models: 100%|██████████| 10/10 [49:52<00:00, 299.37s/it]Fitting bootstrap models: 100%|██████████| 10/10 [49:52<00:00, 299.28s/it]
+Epoch [10/50], Train Loss: 0.0757, Val Loss: 0.2165, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0590, Val Loss: 0.2288, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0749, Val Loss: 0.2134, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0579, Val Loss: 0.2222, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0756, Val Loss: 0.2288, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0574, Val Loss: 0.2434, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0768, Val Loss: 0.2060, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0604, Val Loss: 0.2313, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0764, Val Loss: 0.2138, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0598, Val Loss: 0.2317, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0723, Val Loss: 0.2106, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0551, Val Loss: 0.2268, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0764, Val Loss: 0.2157, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0595, Val Loss: 0.2310, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0784, Val Loss: 0.2206, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0610, Val Loss: 0.2442, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0746, Val Loss: 0.2142, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0580, Val Loss: 0.2308, LR: 0.000125
+Epoch [10/50], Train Loss: 0.0779, Val Loss: 0.2276, LR: 0.000500
+Epoch [20/50], Train Loss: 0.0609, Val Loss: 0.2409, LR: 0.000125
+Generating bootstrap predictions:   0%|          | 0/10 [00:00<?, ?it/s]Generating bootstrap predictions:  20%|██        | 2/10 [00:00<00:00, 18.54it/s]Generating bootstrap predictions:  50%|█████     | 5/10 [00:00<00:00, 20.65it/s]Generating bootstrap predictions:  80%|████████  | 8/10 [00:00<00:00, 21.40it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 21.43it/s]
+MLP RMSE: 10.2922
+Interval coverage: 0.0000 (expected: 0.9500)
+Generating bootstrap predictions:   0%|          | 0/10 [00:00<?, ?it/s]Generating bootstrap predictions:  50%|█████     | 5/10 [00:00<00:00, 39.89it/s]Generating bootstrap predictions:  90%|█████████ | 9/10 [00:00<00:00, 39.53it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 40.00it/s]
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+Start calculate uncertainty for c_std_y
+Epoch [10/50], Train Loss: 0.4410, Val Loss: 0.5105, LR: 0.001000
+Epoch [20/50], Train Loss: 0.4060, Val Loss: 0.4882, LR: 0.000500
+Epoch [30/50], Train Loss: 0.3581, Val Loss: 0.4901, LR: 0.000250
+Fitting bootstrap models:   0%|          | 0/10 [00:00<?, ?it/s]Fitting bootstrap models:  10%|█         | 1/10 [05:00<45:06, 300.67s/it]Fitting bootstrap models:  20%|██        | 2/10 [09:59<39:58, 299.85s/it]Fitting bootstrap models:  30%|███       | 3/10 [15:00<35:00, 300.00s/it]Fitting bootstrap models:  40%|████      | 4/10 [20:01<30:02, 300.44s/it]Fitting bootstrap models:  50%|█████     | 5/10 [25:01<25:01, 300.32s/it]Fitting bootstrap models:  60%|██████    | 6/10 [30:01<20:01, 300.36s/it]Fitting bootstrap models:  70%|███████   | 7/10 [35:01<15:00, 300.31s/it]Fitting bootstrap models:  80%|████████  | 8/10 [40:02<10:00, 300.29s/it]Fitting bootstrap models:  90%|█████████ | 9/10 [45:02<05:00, 300.28s/it]Fitting bootstrap models: 100%|██████████| 10/10 [50:02<00:00, 300.27s/it]Fitting bootstrap models: 100%|██████████| 10/10 [50:02<00:00, 300.27s/it]
+Epoch [10/50], Train Loss: 0.2068, Val Loss: 0.6291, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1577, Val Loss: 0.6749, LR: 0.000125
+Epoch [10/50], Train Loss: 0.2108, Val Loss: 0.6152, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1621, Val Loss: 0.6650, LR: 0.000125
+Epoch [10/50], Train Loss: 0.2090, Val Loss: 0.5946, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1604, Val Loss: 0.6319, LR: 0.000125
+Epoch [10/50], Train Loss: 0.2135, Val Loss: 0.5728, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1650, Val Loss: 0.6253, LR: 0.000125
+Epoch [10/50], Train Loss: 0.2106, Val Loss: 0.5866, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1613, Val Loss: 0.6204, LR: 0.000125
+Epoch [10/50], Train Loss: 0.2139, Val Loss: 0.6050, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1653, Val Loss: 0.6728, LR: 0.000125
+Epoch [10/50], Train Loss: 0.2130, Val Loss: 0.6117, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1640, Val Loss: 0.6651, LR: 0.000125
+Epoch [10/50], Train Loss: 0.2093, Val Loss: 0.5903, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1601, Val Loss: 0.6479, LR: 0.000125
+Epoch [10/50], Train Loss: 0.2164, Val Loss: 0.5939, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1673, Val Loss: 0.6261, LR: 0.000125
+Epoch [10/50], Train Loss: 0.2158, Val Loss: 0.6341, LR: 0.000500
+Epoch [20/50], Train Loss: 0.1657, Val Loss: 0.6912, LR: 0.000125
+Generating bootstrap predictions:   0%|          | 0/10 [00:00<?, ?it/s]Generating bootstrap predictions:  20%|██        | 2/10 [00:00<00:00, 10.84it/s]Generating bootstrap predictions:  40%|████      | 4/10 [00:00<00:00, 11.45it/s]Generating bootstrap predictions:  60%|██████    | 6/10 [00:00<00:00, 11.79it/s]Generating bootstrap predictions:  80%|████████  | 8/10 [00:00<00:00, 11.96it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 12.48it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 12.09it/s]
+MLP RMSE: 15.8531
+Interval coverage: 0.0000 (expected: 0.9500)
+Generating bootstrap predictions:   0%|          | 0/10 [00:00<?, ?it/s]Generating bootstrap predictions:  80%|████████  | 8/10 [00:00<00:00, 72.51it/s]Generating bootstrap predictions: 100%|██████████| 10/10 [00:00<00:00, 67.87it/s]

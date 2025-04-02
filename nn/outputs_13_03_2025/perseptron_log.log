@@ -1,0 +1,162 @@
+2025-03-16 12:41:12,896 - __main__ - INFO - Loading data...
+2025-03-16 12:41:16,399 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-16 12:41:16,399 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:550: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:550: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-16 12:41:19,252 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-16 12:41:21,640 - __main__ - INFO - Training on: cuda
+2025-03-16 12:41:21,640 - __main__ - INFO - Starting training...
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 733, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 675, in main
+    metrics = trainer.train(
+  File "/app/nse/nn/perseptron.py", line 444, in train
+    val_outputs = self.model(X_val_tensor)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/app/nse/nn/perseptron.py", line 115, in forward
+    return self.model(x)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/container.py", line 249, in forward
+    input = module(input)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/activation.py", line 133, in forward
+    return F.relu(input, inplace=self.inplace)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/functional.py", line 1704, in relu
+    result = torch.relu(input)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 718.00 MiB. GPU 0 has a total capacity of 23.65 GiB of which 496.25 MiB is free. Process 2821041 has 21.87 GiB memory in use. Process 2837107 has 1.29 GiB memory in use. Of the allocated memory 828.13 MiB is allocated by PyTorch, and 23.87 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2025-03-16 12:43:36,542 - __main__ - INFO - Loading data...
+2025-03-16 12:43:40,020 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-16 12:43:40,020 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:550: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:550: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-16 12:43:42,859 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-16 12:43:44,024 - __main__ - INFO - Training on: cuda
+2025-03-16 12:43:44,024 - __main__ - INFO - Starting training...
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 733, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 675, in main
+    metrics = trainer.train(
+  File "/app/nse/nn/perseptron.py", line 444, in train
+    val_outputs = self.model(X_val_tensor)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/app/nse/nn/perseptron.py", line 115, in forward
+    return self.model(x)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/container.py", line 249, in forward
+    input = module(input)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/activation.py", line 133, in forward
+    return F.relu(input, inplace=self.inplace)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/functional.py", line 1704, in relu
+    result = torch.relu(input)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 718.00 MiB. GPU 0 has a total capacity of 23.65 GiB of which 444.25 MiB is free. Process 2821041 has 21.92 GiB memory in use. Process 2842211 has 1.29 GiB memory in use. Of the allocated memory 827.74 MiB is allocated by PyTorch, and 24.26 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2025-03-16 14:06:12,366 - __main__ - INFO - Loading data...
+2025-03-16 14:06:15,272 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-16 14:06:15,273 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:550: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:550: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-16 14:06:17,783 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-16 14:06:18,717 - __main__ - INFO - Training on: cuda
+2025-03-16 14:06:18,717 - __main__ - INFO - Starting training...
+2025-03-16 14:06:33,388 - __main__ - INFO - Saved best model with validation loss: 1.7338
+2025-03-16 14:06:46,948 - __main__ - INFO - Saved best model with validation loss: 1.6402
+2025-03-16 14:07:00,536 - __main__ - INFO - Saved best model with validation loss: 1.5785
+2025-03-16 14:07:14,030 - __main__ - INFO - Saved best model with validation loss: 1.5259
+2025-03-16 14:07:27,689 - __main__ - INFO - Saved best model with validation loss: 1.4769
+2025-03-16 14:07:41,261 - __main__ - INFO - Saved best model with validation loss: 1.4377
+2025-03-16 14:07:55,244 - __main__ - INFO - Saved best model with validation loss: 1.4104
+2025-03-16 14:08:09,336 - __main__ - INFO - Saved best model with validation loss: 1.3912
+2025-03-16 14:08:24,946 - __main__ - INFO - Saved best model with validation loss: 1.3766
+2025-03-16 14:08:40,422 - __main__ - INFO - Saved best model with validation loss: 1.3646
+2025-03-16 14:08:40,422 - __main__ - INFO - Epoch [10/100], Train Loss: 1.3073, Val Loss: 1.3646, LR: 0.000100
+2025-03-16 14:08:55,969 - __main__ - INFO - Saved best model with validation loss: 1.3545
+2025-03-16 14:09:10,321 - __main__ - INFO - Saved best model with validation loss: 1.3458
+2025-03-16 14:09:23,924 - __main__ - INFO - Saved best model with validation loss: 1.3381
+2025-03-16 14:09:37,650 - __main__ - INFO - Saved best model with validation loss: 1.3314
+2025-03-16 14:09:51,278 - __main__ - INFO - Saved best model with validation loss: 1.3256
+2025-03-16 14:10:05,664 - __main__ - INFO - Saved best model with validation loss: 1.3207
+2025-03-16 14:10:20,008 - __main__ - INFO - Saved best model with validation loss: 1.3163
+2025-03-16 14:10:33,784 - __main__ - INFO - Saved best model with validation loss: 1.3125
+2025-03-16 14:10:47,473 - __main__ - INFO - Saved best model with validation loss: 1.3091
+2025-03-16 14:11:00,970 - __main__ - INFO - Saved best model with validation loss: 1.3061
+2025-03-16 14:11:00,970 - __main__ - INFO - Epoch [20/100], Train Loss: 1.2346, Val Loss: 1.3061, LR: 0.000100
+2025-03-16 14:11:14,533 - __main__ - INFO - Saved best model with validation loss: 1.3034
+2025-03-16 14:11:28,201 - __main__ - INFO - Saved best model with validation loss: 1.3011
+2025-03-16 14:11:42,022 - __main__ - INFO - Saved best model with validation loss: 1.2990
+2025-03-16 14:11:55,622 - __main__ - INFO - Saved best model with validation loss: 1.2971
+2025-03-16 14:12:10,254 - __main__ - INFO - Saved best model with validation loss: 1.2955
+2025-03-16 14:12:24,787 - __main__ - INFO - Saved best model with validation loss: 1.2941
+2025-03-16 14:12:39,535 - __main__ - INFO - Saved best model with validation loss: 1.2929
+2025-03-16 14:12:55,035 - __main__ - INFO - Saved best model with validation loss: 1.2917
+2025-03-16 14:13:10,564 - __main__ - INFO - Saved best model with validation loss: 1.2908
+2025-03-16 14:13:24,364 - __main__ - INFO - Saved best model with validation loss: 1.2899
+2025-03-16 14:13:24,364 - __main__ - INFO - Epoch [30/100], Train Loss: 1.2074, Val Loss: 1.2899, LR: 0.000100
+2025-03-16 14:13:38,485 - __main__ - INFO - Saved best model with validation loss: 1.2892
+2025-03-16 14:13:52,948 - __main__ - INFO - Saved best model with validation loss: 1.2885
+2025-03-16 14:14:06,673 - __main__ - INFO - Saved best model with validation loss: 1.2880
+2025-03-16 14:14:20,413 - __main__ - INFO - Saved best model with validation loss: 1.2875
+2025-03-16 14:14:34,034 - __main__ - INFO - Saved best model with validation loss: 1.2871
+2025-03-16 14:14:47,779 - __main__ - INFO - Saved best model with validation loss: 1.2867
+2025-03-16 14:15:01,392 - __main__ - INFO - Saved best model with validation loss: 1.2864
+2025-03-16 14:15:15,158 - __main__ - INFO - Saved best model with validation loss: 1.2862
+2025-03-16 14:15:28,836 - __main__ - INFO - Saved best model with validation loss: 1.2859
+2025-03-16 14:15:42,671 - __main__ - INFO - Saved best model with validation loss: 1.2857
+2025-03-16 14:15:42,671 - __main__ - INFO - Epoch [40/100], Train Loss: 1.1908, Val Loss: 1.2857, LR: 0.000100
+2025-03-16 14:15:56,558 - __main__ - INFO - Saved best model with validation loss: 1.2855
+2025-03-16 14:16:10,131 - __main__ - INFO - Saved best model with validation loss: 1.2854
+2025-03-16 14:16:23,712 - __main__ - INFO - Saved best model with validation loss: 1.2853
+2025-03-16 14:17:59,267 - __main__ - INFO - Saved best model with validation loss: 1.2823
+2025-03-16 14:17:59,268 - __main__ - INFO - Epoch [50/100], Train Loss: 1.1722, Val Loss: 1.2823, LR: 0.000050
+2025-03-16 14:19:34,892 - __main__ - INFO - Saved best model with validation loss: 1.2805
+2025-03-16 14:20:16,318 - __main__ - INFO - Epoch [60/100], Train Loss: 1.1623, Val Loss: 1.2808, LR: 0.000025
+2025-03-16 14:22:32,887 - __main__ - INFO - Epoch [70/100], Train Loss: 1.1569, Val Loss: 1.2815, LR: 0.000006
+2025-03-16 14:24:08,087 - __main__ - INFO - Early stopping triggered at epoch 77
+2025-03-16 14:24:08,879 - __main__ - INFO - Training history plot saved to ./outputs_13_03_2025/training_history.png
+2025-03-16 14:24:08,879 - __main__ - INFO - Evaluating model...
+2025-03-16 14:24:08,954 - __main__ - INFO - Loaded best model with validation loss: 1.2804807424545288
+/app/nse/nn/perseptron.py:550: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-16 14:24:23,078 - __main__ - INFO - Model saved to ./outputs_13_03_2025/regression_neural_network.pth
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+                mse        r2      rmse
+c_delta_z  1.928742  0.784951  1.388792
+c_delta_y  4.564633  0.151301  2.136500
+c_std_z    0.036949  0.962390  0.192221
+c_std_y    0.194221  0.932148  0.440706

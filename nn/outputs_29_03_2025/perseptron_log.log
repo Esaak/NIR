@@ -1,0 +1,371 @@
+2025-03-29 21:05:06,721 - __main__ - INFO - Loading data...
+2025-03-29 21:05:57,810 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-29 21:06:00,824 - __main__ - INFO - Loaded data from /app/nse/ml/output_21_03_2025: X shape=(2457600, 10), y shape=(2457600, 4)
+2025-03-29 21:06:00,937 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-29 21:06:06,183 - __main__ - INFO - Initializing model for c_delta_z...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-29 21:06:07,046 - __main__ - INFO - Training on: cuda
+2025-03-29 21:06:07,046 - __main__ - INFO - Starting training...
+2025-03-29 21:06:45,738 - __main__ - INFO - Saved best model with validation loss: 0.0788
+2025-03-29 21:12:39,520 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0000, Val Loss: 0.1139, LR: 0.000050
+2025-03-29 21:18:51,364 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0000, Val Loss: 0.1241, LR: 0.000013
+2025-03-29 21:19:26,335 - __main__ - INFO - Early stopping triggered at epoch 21
+2025-03-29 21:19:28,767 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-29 21:19:28,767 - __main__ - INFO - Evaluating model for c_delta_z...
+2025-03-29 21:19:31,756 - __main__ - INFO - Loaded best model with validation loss: 0.07878539711236954
+2025-03-29 21:19:32,161 - __main__ - INFO - Initializing model for c_delta_y...
+2025-03-29 21:19:32,166 - __main__ - INFO - Training on: cuda
+2025-03-29 21:19:32,166 - __main__ - INFO - Starting training...
+2025-03-29 21:20:11,860 - __main__ - INFO - Saved best model with validation loss: 4.6332
+2025-03-29 21:26:10,847 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0001, Val Loss: 7.2180, LR: 0.000050
+2025-03-29 21:32:24,764 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0001, Val Loss: 7.8932, LR: 0.000013
+2025-03-29 21:33:00,466 - __main__ - INFO - Early stopping triggered at epoch 21
+2025-03-29 21:33:02,130 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-29 21:33:02,130 - __main__ - INFO - Evaluating model for c_delta_y...
+2025-03-29 21:33:04,777 - __main__ - INFO - Loaded best model with validation loss: 4.633214950561523
+2025-03-29 21:33:05,081 - __main__ - INFO - Initializing model for c_std_z...
+2025-03-29 21:33:05,370 - __main__ - INFO - Training on: cuda
+2025-03-29 21:33:05,370 - __main__ - INFO - Starting training...
+2025-03-29 21:33:44,200 - __main__ - INFO - Saved best model with validation loss: 0.0934
+2025-03-29 21:34:39,864 - __main__ - INFO - Saved best model with validation loss: 0.0584
+2025-03-29 21:35:21,375 - __main__ - INFO - Saved best model with validation loss: 0.0398
+2025-03-29 21:36:02,733 - __main__ - INFO - Saved best model with validation loss: 0.0336
+2025-03-29 21:36:41,465 - __main__ - INFO - Saved best model with validation loss: 0.0306
+2025-03-29 21:37:18,459 - __main__ - INFO - Saved best model with validation loss: 0.0295
+2025-03-29 21:37:55,780 - __main__ - INFO - Saved best model with validation loss: 0.0286
+2025-03-29 21:38:34,861 - __main__ - INFO - Saved best model with validation loss: 0.0281
+2025-03-29 21:39:31,717 - __main__ - INFO - Saved best model with validation loss: 0.0279
+2025-03-29 21:40:07,264 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0000, Val Loss: 0.0284, LR: 0.000100
+2025-03-29 21:46:22,072 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0000, Val Loss: 0.0294, LR: 0.000050
+2025-03-29 21:52:16,710 - __main__ - INFO - Early stopping triggered at epoch 29
+2025-03-29 21:52:18,328 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-29 21:52:18,328 - __main__ - INFO - Evaluating model for c_std_z...
+2025-03-29 21:52:19,142 - __main__ - INFO - Loaded best model with validation loss: 0.027925504371523857
+2025-03-29 21:52:19,434 - __main__ - INFO - Initializing model for c_std_y...
+2025-03-29 21:52:19,484 - __main__ - INFO - Training on: cuda
+2025-03-29 21:52:19,484 - __main__ - INFO - Starting training...
+2025-03-29 21:53:09,183 - __main__ - INFO - Saved best model with validation loss: 0.2891
+2025-03-29 21:53:48,593 - __main__ - INFO - Saved best model with validation loss: 0.2376
+2025-03-29 21:54:27,044 - __main__ - INFO - Saved best model with validation loss: 0.2303
+2025-03-29 21:55:05,834 - __main__ - INFO - Saved best model with validation loss: 0.2268
+2025-03-29 21:59:00,816 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0000, Val Loss: 0.2412, LR: 0.000100
+2025-03-29 22:05:27,201 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0000, Val Loss: 0.2605, LR: 0.000025
+2025-03-29 22:08:08,363 - __main__ - INFO - Early stopping triggered at epoch 24
+2025-03-29 22:08:10,691 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-29 22:08:10,691 - __main__ - INFO - Evaluating model for c_std_y...
+2025-03-29 22:08:16,732 - __main__ - INFO - Loaded best model with validation loss: 0.22682814300060272
+2025-03-29 22:08:16,786 - __main__ - INFO - Calculating SHAP values for feature importance...
+(4517057, 11) (4517057, 4)
+Split shapes: train: X(2895184, 11), y(2895184, 4), test: X(901693, 11), y(901693, 4), valid: X(720180, 11), y(720180, 4)
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron_test.py", line 867, in <module>
+    main()
+  File "/app/nse/nn/perseptron_test.py", line 821, in main
+    feature_importance = plot_feature_importance(
+  File "/app/nse/nn/perseptron_test.py", line 685, in plot_feature_importance
+    shap_values_tmp = shap_values_d[col][:, :, idx]
+IndexError: index 1 is out of bounds for axis 2 with size 1
+2025-03-29 22:17:40,581 - __main__ - INFO - Loading data...
+2025-03-29 22:18:18,374 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-29 22:18:28,843 - __main__ - INFO - Loaded data from /app/nse/ml/output_21_03_2025: X shape=(2457600, 10), y shape=(2457600, 4)
+2025-03-29 22:18:28,957 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-29 22:18:34,146 - __main__ - INFO - Initializing model for c_delta_z...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-29 22:18:35,371 - __main__ - INFO - Training on: cuda
+2025-03-29 22:18:35,372 - __main__ - INFO - Starting training...
+2025-03-29 22:19:14,364 - __main__ - INFO - Saved best model with validation loss: 0.0788
+2025-03-29 22:25:04,292 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0000, Val Loss: 0.1139, LR: 0.000050
+2025-03-29 22:31:08,689 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0000, Val Loss: 0.1241, LR: 0.000013
+2025-03-29 22:31:43,222 - __main__ - INFO - Early stopping triggered at epoch 21
+2025-03-29 22:31:45,621 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-29 22:31:45,621 - __main__ - INFO - Evaluating model for c_delta_z...
+2025-03-29 22:31:45,868 - __main__ - INFO - Loaded best model with validation loss: 0.07878539711236954
+2025-03-29 22:31:46,133 - __main__ - INFO - Initializing model for c_delta_y...
+2025-03-29 22:31:46,150 - __main__ - INFO - Training on: cuda
+2025-03-29 22:31:46,150 - __main__ - INFO - Starting training...
+2025-03-29 22:32:25,298 - __main__ - INFO - Saved best model with validation loss: 4.6332
+2025-03-29 22:38:19,480 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0001, Val Loss: 7.2180, LR: 0.000050
+2025-03-29 22:44:31,361 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0001, Val Loss: 7.8932, LR: 0.000013
+2025-03-29 22:45:06,257 - __main__ - INFO - Early stopping triggered at epoch 21
+2025-03-29 22:45:08,084 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-29 22:45:08,084 - __main__ - INFO - Evaluating model for c_delta_y...
+2025-03-29 22:45:09,888 - __main__ - INFO - Loaded best model with validation loss: 4.633214950561523
+2025-03-29 22:45:10,206 - __main__ - INFO - Initializing model for c_std_z...
+2025-03-29 22:45:10,300 - __main__ - INFO - Training on: cuda
+2025-03-29 22:45:10,301 - __main__ - INFO - Starting training...
+2025-03-29 22:45:47,841 - __main__ - INFO - Saved best model with validation loss: 0.0934
+2025-03-29 22:46:27,965 - __main__ - INFO - Saved best model with validation loss: 0.0584
+2025-03-29 22:47:21,244 - __main__ - INFO - Saved best model with validation loss: 0.0398
+2025-03-29 22:48:00,170 - __main__ - INFO - Saved best model with validation loss: 0.0336
+2025-03-29 22:48:38,277 - __main__ - INFO - Saved best model with validation loss: 0.0306
+2025-03-29 22:49:16,650 - __main__ - INFO - Saved best model with validation loss: 0.0295
+2025-03-29 22:49:53,127 - __main__ - INFO - Saved best model with validation loss: 0.0286
+2025-03-29 22:50:31,192 - __main__ - INFO - Saved best model with validation loss: 0.0281
+2025-03-29 22:51:17,070 - __main__ - INFO - Saved best model with validation loss: 0.0279
+2025-03-29 22:51:58,199 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0000, Val Loss: 0.0284, LR: 0.000100
+2025-03-29 22:58:11,843 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0000, Val Loss: 0.0294, LR: 0.000050
+2025-03-29 23:03:52,789 - __main__ - INFO - Early stopping triggered at epoch 29
+2025-03-29 23:03:53,808 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-29 23:03:53,808 - __main__ - INFO - Evaluating model for c_std_z...
+2025-03-29 23:03:54,080 - __main__ - INFO - Loaded best model with validation loss: 0.027925504371523857
+2025-03-29 23:03:54,334 - __main__ - INFO - Initializing model for c_std_y...
+2025-03-29 23:03:54,378 - __main__ - INFO - Training on: cuda
+2025-03-29 23:03:54,378 - __main__ - INFO - Starting training...
+2025-03-29 23:04:50,947 - __main__ - INFO - Saved best model with validation loss: 0.2891
+2025-03-29 23:05:29,700 - __main__ - INFO - Saved best model with validation loss: 0.2376
+2025-03-29 23:06:07,755 - __main__ - INFO - Saved best model with validation loss: 0.2303
+2025-03-29 23:06:46,449 - __main__ - INFO - Saved best model with validation loss: 0.2268
+2025-03-29 23:10:39,928 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0000, Val Loss: 0.2412, LR: 0.000100
+2025-03-29 23:16:55,966 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0000, Val Loss: 0.2605, LR: 0.000025
+2025-03-29 23:19:39,900 - __main__ - INFO - Early stopping triggered at epoch 24
+2025-03-29 23:19:43,580 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-29 23:19:43,580 - __main__ - INFO - Evaluating model for c_std_y...
+2025-03-29 23:19:49,621 - __main__ - INFO - Loaded best model with validation loss: 0.22682814300060272
+2025-03-29 23:19:49,675 - __main__ - INFO - Calculating SHAP values for feature importance...
+(4517057, 11) (4517057, 4)
+Split shapes: train: X(2895184, 11), y(2895184, 4), test: X(901693, 11), y(901693, 4), valid: X(720180, 11), y(720180, 4)
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron_test.py", line 867, in <module>
+    main()
+  File "/app/nse/nn/perseptron_test.py", line 821, in main
+    feature_importance = plot_feature_importance(
+  File "/app/nse/nn/perseptron_test.py", line 692, in plot_feature_importance
+    feature_importance_pd = pd.Series(combined_shap_values, feature_names)
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/series.py", line 584, in __init__
+    data = sanitize_array(data, index, dtype, copy)
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/construction.py", line 659, in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/construction.py", line 718, in _sanitize_ndim
+    raise ValueError(
+ValueError: Data must be 1-dimensional, got ndarray of shape (9, 1) instead
+2025-03-30 05:47:24,175 - __main__ - INFO - Loading data...
+2025-03-30 05:47:35,265 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-30 05:47:46,480 - __main__ - INFO - Loaded data from /app/nse/ml/output_21_03_2025: X shape=(2457600, 10), y shape=(2457600, 4)
+2025-03-30 05:47:46,585 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-30 05:47:51,559 - __main__ - INFO - Initializing model for c_delta_z...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-30 05:47:54,793 - __main__ - INFO - Training on: cuda
+2025-03-30 05:47:54,793 - __main__ - INFO - Starting training...
+2025-03-30 05:48:32,722 - __main__ - INFO - Saved best model with validation loss: 0.5879
+2025-03-30 05:48:33,620 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 05:48:33,620 - __main__ - INFO - Evaluating model for c_delta_z...
+2025-03-30 05:48:33,627 - __main__ - INFO - Loaded best model with validation loss: 0.5878939032554626
+2025-03-30 05:48:33,814 - __main__ - INFO - Initializing model for c_delta_y...
+2025-03-30 05:48:33,815 - __main__ - INFO - Training on: cuda
+2025-03-30 05:48:33,815 - __main__ - INFO - Starting training...
+2025-03-30 05:49:09,881 - __main__ - INFO - Saved best model with validation loss: 10.3019
+2025-03-30 05:49:10,559 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 05:49:10,559 - __main__ - INFO - Evaluating model for c_delta_y...
+2025-03-30 05:49:10,566 - __main__ - INFO - Loaded best model with validation loss: 10.301850318908691
+2025-03-30 05:49:10,744 - __main__ - INFO - Initializing model for c_std_z...
+2025-03-30 05:49:10,745 - __main__ - INFO - Training on: cuda
+2025-03-30 05:49:10,745 - __main__ - INFO - Starting training...
+2025-03-30 05:49:46,289 - __main__ - INFO - Saved best model with validation loss: 15.1540
+2025-03-30 05:49:46,995 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 05:49:46,995 - __main__ - INFO - Evaluating model for c_std_z...
+2025-03-30 05:49:47,001 - __main__ - INFO - Loaded best model with validation loss: 15.154043197631836
+2025-03-30 05:49:47,195 - __main__ - INFO - Initializing model for c_std_y...
+2025-03-30 05:49:47,267 - __main__ - INFO - Training on: cuda
+2025-03-30 05:49:47,267 - __main__ - INFO - Starting training...
+2025-03-30 05:50:23,916 - __main__ - INFO - Saved best model with validation loss: 11.7991
+2025-03-30 05:50:24,655 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 05:50:24,655 - __main__ - INFO - Evaluating model for c_std_y...
+2025-03-30 05:50:24,662 - __main__ - INFO - Loaded best model with validation loss: 11.7991304397583
+2025-03-30 05:50:24,669 - __main__ - INFO - Calculating SHAP values for feature importance...
+(4517057, 11) (4517057, 4)
+Split shapes: train: X(2895184, 11), y(2895184, 4), test: X(901693, 11), y(901693, 4), valid: X(720180, 11), y(720180, 4)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/seaborn/_base.py", line 1768, in categorical_order
+    order = vector.cat.categories
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/generic.py", line 6299, in __getattr__
+    return object.__getattribute__(self, name)
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/accessor.py", line 224, in __get__
+    accessor_obj = self._accessor(obj)
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/arrays/categorical.py", line 2898, in __init__
+    self._validate(data)
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/arrays/categorical.py", line 2907, in _validate
+    raise AttributeError("Can only use .cat accessor with a 'category' dtype")
+AttributeError: Can only use .cat accessor with a 'category' dtype. Did you mean: 'at'?
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron_test.py", line 871, in <module>
+    main()
+  File "/app/nse/nn/perseptron_test.py", line 825, in main
+    feature_importance = plot_feature_importance(
+  File "/app/nse/nn/perseptron_test.py", line 696, in plot_feature_importance
+    sns.barplot(x='Importance', y='Feature', data=feature_importance, ax=axes[row, col_idx])
+  File "/usr/local/lib/python3.10/dist-packages/seaborn/categorical.py", line 2341, in barplot
+    p = _CategoricalAggPlotter(
+  File "/usr/local/lib/python3.10/dist-packages/seaborn/categorical.py", line 131, in __init__
+    cat_levels = categorical_order(self.plot_data[self.orient], order)
+  File "/usr/local/lib/python3.10/dist-packages/seaborn/_base.py", line 1771, in categorical_order
+    order = pd.Series(vector).unique()
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/series.py", line 2407, in unique
+    return super().unique()
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/base.py", line 1025, in unique
+    result = algorithms.unique1d(values)
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/algorithms.py", line 401, in unique
+    return unique_with_mask(values)
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/algorithms.py", line 440, in unique_with_mask
+    uniques = table.unique(values)
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7248, in pandas._libs.hashtable.PyObjectHashTable.unique
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7195, in pandas._libs.hashtable.PyObjectHashTable._unique
+TypeError: unhashable type: 'numpy.ndarray'
+2025-03-30 06:02:40,541 - __main__ - INFO - Loading data...
+2025-03-30 06:02:43,586 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-30 06:02:46,235 - __main__ - INFO - Loaded data from /app/nse/ml/output_21_03_2025: X shape=(2457600, 10), y shape=(2457600, 4)
+2025-03-30 06:02:46,338 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-30 06:02:51,252 - __main__ - INFO - Initializing model for c_delta_z...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-30 06:02:52,120 - __main__ - INFO - Training on: cuda
+2025-03-30 06:02:52,120 - __main__ - INFO - Starting training...
+2025-03-30 06:03:27,979 - __main__ - INFO - Saved best model with validation loss: 0.5879
+2025-03-30 06:03:28,710 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 06:03:28,710 - __main__ - INFO - Evaluating model for c_delta_z...
+2025-03-30 06:03:28,717 - __main__ - INFO - Loaded best model with validation loss: 0.5878939032554626
+2025-03-30 06:03:28,906 - __main__ - INFO - Initializing model for c_delta_y...
+2025-03-30 06:03:28,919 - __main__ - INFO - Training on: cuda
+2025-03-30 06:03:28,919 - __main__ - INFO - Starting training...
+2025-03-30 06:04:04,297 - __main__ - INFO - Saved best model with validation loss: 10.3019
+2025-03-30 06:04:05,020 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 06:04:05,020 - __main__ - INFO - Evaluating model for c_delta_y...
+2025-03-30 06:04:05,027 - __main__ - INFO - Loaded best model with validation loss: 10.301850318908691
+2025-03-30 06:04:05,207 - __main__ - INFO - Initializing model for c_std_z...
+2025-03-30 06:04:05,219 - __main__ - INFO - Training on: cuda
+2025-03-30 06:04:05,219 - __main__ - INFO - Starting training...
+2025-03-30 06:04:40,260 - __main__ - INFO - Saved best model with validation loss: 15.1540
+2025-03-30 06:04:40,946 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 06:04:40,953 - __main__ - INFO - Evaluating model for c_std_z...
+2025-03-30 06:04:40,963 - __main__ - INFO - Loaded best model with validation loss: 15.154043197631836
+2025-03-30 06:04:41,145 - __main__ - INFO - Initializing model for c_std_y...
+2025-03-30 06:04:41,146 - __main__ - INFO - Training on: cuda
+2025-03-30 06:04:41,147 - __main__ - INFO - Starting training...
+2025-03-30 06:05:17,076 - __main__ - INFO - Saved best model with validation loss: 11.7991
+2025-03-30 06:05:17,757 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 06:05:17,757 - __main__ - INFO - Evaluating model for c_std_y...
+2025-03-30 06:05:17,764 - __main__ - INFO - Loaded best model with validation loss: 11.7991304397583
+2025-03-30 06:05:17,775 - __main__ - INFO - Calculating SHAP values for feature importance...
+2025-03-30 06:06:08,797 - __main__ - INFO - SHAP summary plot saved to ./outputs_29_03_2025/feature_importance.png
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-30 06:06:32,746 - __main__ - INFO - Final Test MSE Loss: 14311.4336
+2025-03-30 06:06:55,706 - __main__ - INFO - Model saved to ./outputs_29_03_2025/regression_neural_network.pth
+2025-03-30 06:06:55,706 - __main__ - INFO - Finish...
+(4517057, 11) (4517057, 4)
+Split shapes: train: X(2895184, 11), y(2895184, 4), test: X(901693, 11), y(901693, 4), valid: X(720180, 11), y(720180, 4)
+                 mse         r2      rmse
+c_delta_z   0.602250  -0.972486  0.776048
+c_delta_y  10.605906  -0.724263  3.256671
+c_std_z    15.375831 -19.719881  3.921203
+c_std_y    12.288841  -3.195787  3.505544
+                   mse        r2       rmse
+c_delta_z  4546.099749 -0.482839  67.424771
+c_delta_y  1742.487348 -0.173563  41.743111
+c_std_z    6459.074986 -1.901363  80.368371
+c_std_y    6174.754618 -0.851446  78.579607
+2025-03-30 06:07:39,438 - __main__ - INFO - Loading data...
+2025-03-30 06:07:46,122 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-30 06:07:48,777 - __main__ - INFO - Loaded data from /app/nse/ml/output_21_03_2025: X shape=(2457600, 10), y shape=(2457600, 4)
+2025-03-30 06:07:48,870 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-30 06:07:53,491 - __main__ - INFO - Initializing model for c_delta_z...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-30 06:07:54,404 - __main__ - INFO - Training on: cuda
+2025-03-30 06:07:54,404 - __main__ - INFO - Starting training...
+2025-03-30 06:08:29,772 - __main__ - INFO - Saved best model with validation loss: 0.0788
+2025-03-30 06:13:41,714 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0000, Val Loss: 0.1139, LR: 0.000050
+2025-03-30 06:19:26,907 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0000, Val Loss: 0.1241, LR: 0.000013
+2025-03-30 06:20:01,784 - __main__ - INFO - Early stopping triggered at epoch 21
+2025-03-30 06:20:02,751 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 06:20:02,751 - __main__ - INFO - Evaluating model for c_delta_z...
+2025-03-30 06:20:02,884 - __main__ - INFO - Loaded best model with validation loss: 0.07878539711236954
+2025-03-30 06:20:03,259 - __main__ - INFO - Initializing model for c_delta_y...
+2025-03-30 06:20:03,274 - __main__ - INFO - Training on: cuda
+2025-03-30 06:20:03,274 - __main__ - INFO - Starting training...
+2025-03-30 06:20:38,402 - __main__ - INFO - Saved best model with validation loss: 4.6332
+2025-03-30 06:25:54,203 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0001, Val Loss: 7.2180, LR: 0.000050
+2025-03-30 06:31:42,899 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0001, Val Loss: 7.8932, LR: 0.000013
+2025-03-30 06:32:17,851 - __main__ - INFO - Early stopping triggered at epoch 21
+2025-03-30 06:32:18,799 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 06:32:18,799 - __main__ - INFO - Evaluating model for c_delta_y...
+2025-03-30 06:32:18,957 - __main__ - INFO - Loaded best model with validation loss: 4.633214950561523
+2025-03-30 06:32:19,247 - __main__ - INFO - Initializing model for c_std_z...
+2025-03-30 06:32:19,254 - __main__ - INFO - Training on: cuda
+2025-03-30 06:32:19,254 - __main__ - INFO - Starting training...
+2025-03-30 06:32:54,401 - __main__ - INFO - Saved best model with validation loss: 0.0934
+2025-03-30 06:33:29,556 - __main__ - INFO - Saved best model with validation loss: 0.0584
+2025-03-30 06:34:05,037 - __main__ - INFO - Saved best model with validation loss: 0.0398
+2025-03-30 06:34:40,807 - __main__ - INFO - Saved best model with validation loss: 0.0336
+2025-03-30 06:35:16,296 - __main__ - INFO - Saved best model with validation loss: 0.0306
+2025-03-30 06:35:51,777 - __main__ - INFO - Saved best model with validation loss: 0.0295
+2025-03-30 06:36:27,174 - __main__ - INFO - Saved best model with validation loss: 0.0286
+2025-03-30 06:37:02,517 - __main__ - INFO - Saved best model with validation loss: 0.0281
+2025-03-30 06:37:37,910 - __main__ - INFO - Saved best model with validation loss: 0.0279
+2025-03-30 06:38:13,057 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0000, Val Loss: 0.0284, LR: 0.000100
+2025-03-30 06:44:05,154 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0000, Val Loss: 0.0294, LR: 0.000050
+2025-03-30 06:49:21,621 - __main__ - INFO - Early stopping triggered at epoch 29
+2025-03-30 06:49:22,598 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 06:49:22,598 - __main__ - INFO - Evaluating model for c_std_z...
+2025-03-30 06:49:22,852 - __main__ - INFO - Loaded best model with validation loss: 0.027925504371523857
+2025-03-30 06:49:23,163 - __main__ - INFO - Initializing model for c_std_y...
+2025-03-30 06:49:23,167 - __main__ - INFO - Training on: cuda
+2025-03-30 06:49:23,167 - __main__ - INFO - Starting training...
+2025-03-30 06:49:58,751 - __main__ - INFO - Saved best model with validation loss: 0.2891
+2025-03-30 06:50:34,197 - __main__ - INFO - Saved best model with validation loss: 0.2376
+2025-03-30 06:51:09,420 - __main__ - INFO - Saved best model with validation loss: 0.2303
+2025-03-30 06:51:44,846 - __main__ - INFO - Saved best model with validation loss: 0.2268
+2025-03-30 06:55:17,311 - __main__ - INFO - Epoch [10/100], Train Loss: 0.0000, Val Loss: 0.2412, LR: 0.000100
+2025-03-30 07:01:10,949 - __main__ - INFO - Epoch [20/100], Train Loss: 0.0000, Val Loss: 0.2605, LR: 0.000025
+2025-03-30 07:03:33,030 - __main__ - INFO - Early stopping triggered at epoch 24
+2025-03-30 07:03:33,953 - __main__ - INFO - Training history plot saved to ./outputs_29_03_2025/training_history.png
+2025-03-30 07:03:33,953 - __main__ - INFO - Evaluating model for c_std_y...
+2025-03-30 07:03:34,231 - __main__ - INFO - Loaded best model with validation loss: 0.22682814300060272
+2025-03-30 07:03:34,288 - __main__ - INFO - Calculating SHAP values for feature importance...
+2025-03-30 07:04:24,565 - __main__ - INFO - SHAP summary plot saved to ./outputs_29_03_2025/feature_importance.png
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron_test.py:647: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-30 07:04:49,374 - __main__ - INFO - Final Test MSE Loss: 13538.0664
+2025-03-30 07:05:13,255 - __main__ - INFO - Model saved to ./outputs_29_03_2025/regression_neural_network.pth
+2025-03-30 07:05:13,255 - __main__ - INFO - Finish...
+(4517057, 11) (4517057, 4)
+Split shapes: train: X(2895184, 11), y(2895184, 4), test: X(901693, 11), y(901693, 4), valid: X(720180, 11), y(720180, 4)
+                mse        r2      rmse
+c_delta_z  0.087582  0.713154  0.295942
+c_delta_y  4.806575  0.218567  2.192390
+c_std_z    0.029618  0.960088  0.172099
+c_std_y    0.227281  0.922399  0.476740
+                   mse        r2       rmse
+c_delta_z   906.194709  0.704419  30.103068
+c_delta_y  1410.726321  0.049877  37.559637
+c_std_z     179.993665  0.919148  13.416172
+c_std_y     264.922563  0.920565  16.276442

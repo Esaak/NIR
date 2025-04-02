@@ -16,7 +16,8 @@ from sklearn.metrics import root_mean_squared_error, r2_score, mean_squared_erro
 from sklearn.compose import TransformedTargetRegressor
 from sklearn.preprocessing import StandardScaler
 
-from perform_visualization import perform_eda, perform_eda_short, performance_visualizations
+from perform_visualization import perform_eda, perform_eda_short, performance_visualizations, feature_importances_catboost
+
 
 # Configure logging
 logging.basicConfig(
@@ -55,11 +56,13 @@ class TargetPreprocessor(BaseEstimator, TransformerMixin):
         mean_y_sign = np.sign(data["c_delta_y"])
         data["c_delta_y"] = np.abs(data["c_delta_y"])       
         data["c_delta_y"] = np.log1p(data["c_delta_y"])
+        # data["c_delta_y"] = np.log(data["c_delta_y"] + 1e-6)
         data["c_delta_y"]*=mean_y_sign
         
         data["c_delta_z"] = (data["c_delta_z"] - self.stats["c_delta_z_mean"])/self.stats["c_delta_z_std"]
         mean_z_sign = np.sign(data["c_delta_z"])
         data["c_delta_z"]= mean_z_sign * np.log1p(np.abs(data["c_delta_z"]))
+        # data["c_delta_z"]= mean_z_sign * np.log(np.abs(data["c_delta_z"]) + 1e-6)
 
         return data
     
@@ -103,7 +106,7 @@ class DataLoader:
         if not folder_paths:
             folder_paths = [os.path.join(base_path, "output_28_12_2024")]
         
-        folder_paths = [os.path.join(base_path, "output_19_01_2025_2")]
+        folder_paths = [os.path.join(base_path, "output_19_01_2025_2"), os.path.join(base_path, "output_21_03_2025")]
         X = pd.DataFrame()
         y = pd.DataFrame()
         
@@ -327,6 +330,7 @@ class CatBoostOptimizer:
         y_eval: pd.DataFrame,
         X_valid: pd.DataFrame,
         y_valid: pd.DataFrame,
+        sample_weight: np.ndarray,
         target_column: str,
         random_state: int = 42,
         n_trials: int = 500,
@@ -339,6 +343,7 @@ class CatBoostOptimizer:
         self.y_eval = y_eval[target_column]
         self.X_valid = X_valid
         self.y_valid = y_valid[target_column]
+        self.sample_weight = sample_weight 
         self.target_column = target_column
         self.random_state = random_state
         self.n_trials = n_trials
@@ -349,12 +354,12 @@ class CatBoostOptimizer:
     
     def objective(self, trial: optuna.Trial) -> float:
         param = {
-            'learning_rate': trial.suggest_float("learning_rate", 0.0001, 0.02),
+            'learning_rate': trial.suggest_float("learning_rate", 0.00001, 0.02),
             'depth': trial.suggest_int('depth', 1, 16),
             'l2_leaf_reg': trial.suggest_float('l2_leaf_reg', 0.0, 3.0),
             'min_child_samples': trial.suggest_categorical('min_child_samples', [1, 4, 8, 16, 32]),
             'grow_policy': 'SymmetricTree',
-            'iterations': 300,
+            'iterations': 500,
             'use_best_model': True,
             'eval_metric': 'RMSE',
             'loss_function': 'RMSE',
@@ -370,6 +375,7 @@ class CatBoostOptimizer:
         regressor.fit(
             self.X_train,
             self.y_train,
+            sample_weight= self.sample_weight,
             eval_set=[(self.X_eval, self.y_eval)],
             early_stopping_rounds=self.early_stopping_rounds,
             verbose=False
@@ -426,6 +432,7 @@ class ModelTrainer:
         y_eval: pd.DataFrame,
         X_test: pd.DataFrame,
         y_test: pd.DataFrame,
+        sample_weight: Dict[str, np.ndarray],
         target_preprocessor: TargetPreprocessor,
         feature_scaler: StandardScaler,
         params: Dict[str, Dict[str, Any]],
@@ -438,6 +445,7 @@ class ModelTrainer:
         self.y_eval = y_eval
         self.X_test = X_test
         self.y_test = y_test
+        self.sample_weight = sample_weight
         self.target_preprocessor = target_preprocessor
         self.feature_scaler = feature_scaler
         self.params = params
@@ -462,6 +470,7 @@ class ModelTrainer:
             model.fit(
                 self.X_train,
                 self.y_train[target],
+                sample_weight=self.sample_weight[target],
                 eval_set=[(self.X_eval, self.y_eval[target])],
                 early_stopping_rounds=self.early_stopping_rounds,
                 verbose=100
@@ -494,7 +503,7 @@ class ModelTrainer:
         # Convert predictions to DataFrame for inverse transformation
         y_pred_df = pd.DataFrame(self.predictions)
         y_test_transformed = self.target_preprocessor.transform(self.y_test)
-        performance_visualizations(y_pred_df, y_test_transformed, filename_barplot = self.output_dir + "/cb_model_hist_transformed.png", 
+        performance_visualizations(y_pred_df, y_test_transformed, transform=True, filename_barplot = self.output_dir + "/cb_model_hist_transformed.png", 
                                                 filename_compare = self.output_dir + "/cb_model_transformed.png",
                                                 filename_text = self.output_dir + "/metrics_transformed.csv")
         # Inverse transform predictions
@@ -545,10 +554,12 @@ def main():
         'data_path': "/app/nse/ml/",
         'features_filename': 'features_full.csv',
         'targets_filename': 'target_full.csv',
-        'output_dir': './outputs_10_03_2025',
-        'optuna_trials': 500,
+        'output_dir': './outputs_29_03_2025',
+        'optuna_trials': 300,
+        # 'optuna_trials': 200,
         'gpu_enabled': True,
         'final_iterations': 1000
+        # 'final_iterations': 500
     }
     
     # Set random seed for reproducibility
@@ -575,9 +586,24 @@ def main():
     # Hyperparameter optimization 
     logger.info("Starting hyperparameter optimization...")
     final_params = {}
+    sample_weights = {}
     for target_column in data["y_test"].columns:
         logger.info(f"Starting {target_column} optimization...")
         
+        points = np.linspace(np.min(data["y_train"][target_column]), np.max(data["y_train"][target_column]), 201)
+        density, bin_edges = np.histogram(data["y_train"][target_column], bins=points)
+        bin_indices = np.digitize(data["y_train"][target_column], bin_edges) - 1    
+        density_answ = []
+        # density = np.log1p(density.astype(float))
+        for i in density:
+            if i !=0:
+                density_answ.append(1.0/i)
+            else:
+                density_answ.append(0)
+        density = np.array(density_answ)
+        bin_indices = np.clip(bin_indices, 0, len(density) - 1)
+        sample_weight = density[bin_indices]
+        sample_weights[target_column] = sample_weight
         optimizer = CatBoostOptimizer(
             data['X_train'],
             data['y_train'],
@@ -585,6 +611,7 @@ def main():
             data['y_eval'],
             data['X_valid'],
             data['y_valid'],
+            sample_weight=sample_weight,
             target_column= target_column,
             random_state=config['random_state'],
             n_trials=config['optuna_trials'],
@@ -595,7 +622,7 @@ def main():
         
         # Get final parameters
         final_params[target_column] = optimizer.get_final_params(iterations=config['final_iterations'])
-        
+        logger.info(final_params[target_column])
     # Train models for all targets
     logger.info("Training final models...")
     trainer = ModelTrainer(
@@ -605,6 +632,7 @@ def main():
         data['y_eval'],
         data['X_test'],
         data['y_test'],
+        sample_weights,
         data['target_preprocessor'],
         data['feature_scaler'],
         params=final_params,
@@ -614,15 +642,16 @@ def main():
     
     models_final = trainer.train_all_targets()
     
-    feature_importances_catboost(models_final, np.asarray(data["y_test"].columns), np.asarray(data["X_test"].columns),
-                                 filename = config["output_dir"] + "/feature_importance.png")    
-    # Evaluate models
-    logger.info("Evaluating models...")
-    metrics = trainer.evaluate()
-    
     # Save models
     logger.info("Saving models...")
     trainer.save_models()
+      
+    # Evaluate models
+    logger.info("Evaluating models...")
+    metrics = trainer.evaluate()
+    feature_importances_catboost(models_final, np.asarray(data["y_test"].columns), np.asarray(data["X_test"].columns),
+                                 filename = config["output_dir"] + "/feature_importance.png")  
+    
     
     logger.info("Pipeline completed successfully!")
 

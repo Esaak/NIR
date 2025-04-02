@@ -9,7 +9,11 @@ from matplotlib import cm
 from matplotlib.colors import Normalize 
 from scipy.interpolate import interpn
 
+sns.set_theme(font = 'serif')
+
 def perform_eda(X, y):
+    sns.set_context("talk")
+
     """Perform Exploratory Data Analysis"""
     # Feature distributions
     shape_col_f = 3
@@ -82,6 +86,8 @@ def density_scatter(x, y, ax=None, bins=20, cmap='viridis', **kwargs):
     return ax
 
 def perform_eda_short(X, y):
+    sns.set_context("talk")
+
     """Perform Exploratory Data Analysis without correlation"""
     # Feature distributions
     shape_col_f = 3
@@ -109,9 +115,12 @@ def perform_eda_short(X, y):
     plt.tight_layout()
     plt.show()
     
-def performance_visualizations(y_pred, y_test, filename_barplot = "nn_model_hist.png", 
+def performance_visualizations(y_pred, y_test,
+                               transform = False, 
+                               filename_barplot = "nn_model_hist.png", 
                                                 filename_compare = "nn_model.png",
                                                 filename_text = "metrics.csv"):
+    sns.set_context("talk")
     metrics = {'mse': {}, 'r2': {}, 'rmse': {}}
     
     for target in y_test.columns:
@@ -149,7 +158,8 @@ def performance_visualizations(y_pred, y_test, filename_barplot = "nn_model_hist
     shape_row = y_test.shape[1] // shape_col + int(y_test.shape[1] % shape_col != 0) 
     
     fig, axes = plt.subplots(shape_row, shape_col, figsize=(6, 6))
-    fig.suptitle(f'True vs Predicted')
+    # fig.suptitle(f'True vs Predicted')
+    
     for idx, target in enumerate(y_test.columns):
         row = idx // shape_row
         col = idx % shape_col
@@ -176,8 +186,14 @@ def performance_visualizations(y_pred, y_test, filename_barplot = "nn_model_hist
         axes[row, col].plot([y_test[target].min(), y_test[target].max()],
                                 [y_test[target].min(), y_test[target].max()], 'r--', lw=2)
         axes[row, col].set_title(f'{target}')
-        axes[row, col].set_xlabel('True, m')
-        axes[row, col].set_ylabel('Predicted, m')            
+        # axes[row, col].set_xlabel('True, m')
+        # axes[row, col].set_ylabel('Predicted, m')  
+        if transform:  
+            axes[row, col].set_xlabel('Истина')
+            axes[row, col].set_ylabel('Прогноз')
+        else:
+            axes[row, col].set_xlabel('Истина, м')
+            axes[row, col].set_ylabel('Прогноз, м')              
     plt.tight_layout()
     plt.savefig(filename_compare)
     # plt.show()
@@ -188,16 +204,21 @@ def performance_visualizations(y_pred, y_test, filename_barplot = "nn_model_hist
     metrics_df.to_csv(filename_text)
     print(metrics_df)
 
-def feature_importances_catboost(models_dict, y, feature_columns, filename):
+def feature_importances_catboost(models_dict, target_columns, feature_columns, filename):
+    sns.set_theme(font='serif')
+    sns.set_context("talk")
+
     shape_col_t = 2        
     shape_row_t = 2
     fig, axes = plt.subplots(shape_row_t, shape_col_t, figsize=(10, 10)) 
     sns.set_theme(style="whitegrid")
-    for idx, col in enumerate(y.columns):
+    for idx, col in enumerate(target_columns):
         row = idx // shape_col_t
         col_idx = idx % shape_row_t
         feature_importance = models_dict[col].get_feature_importance()
         sorted_idx = np.argsort(feature_importance)
+        feature_importance_pd = pd.Series(feature_importance, feature_columns)
+        feature_importance_pd.to_csv("feature_importance_cb_" + col + ".csv")
         sns.barplot(x = feature_importance[sorted_idx], y=np.array(feature_columns)[sorted_idx], ax=axes[row, col_idx])
         # axes[row, col_idx].set_yticks(range(len(sorted_idx)), np.array(X_test.columns)[sorted_idx])
         axes[row, col_idx].set_title(f'Feature importance {col}')

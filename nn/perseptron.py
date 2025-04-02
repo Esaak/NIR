@@ -14,9 +14,12 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
+from tqdm import tqdm
+from torch.nn import _reduction as _Reduction, functional as F
+from torch.utils.tensorboard import SummaryWriter
 
 from perform_visualization import performance_visualizations
-
+from torch.utils.data import Dataset
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -54,11 +57,14 @@ class TargetPreprocessor(BaseEstimator, TransformerMixin):
         mean_y_sign = np.sign(data["c_delta_y"])
         data["c_delta_y"] = np.abs(data["c_delta_y"])       
         data["c_delta_y"] = np.log1p(data["c_delta_y"])
+        # data["c_delta_y"] = np.log(data["c_delta_y"]+1e-6)
+        
         data["c_delta_y"]*=mean_y_sign
         
         data["c_delta_z"] = (data["c_delta_z"] - self.stats["c_delta_z_mean"])/self.stats["c_delta_z_std"]
         mean_z_sign = np.sign(data["c_delta_z"])
         data["c_delta_z"]= mean_z_sign * np.log1p(np.abs(data["c_delta_z"]))
+        # data["c_delta_z"]= mean_z_sign * np.log(np.abs(data["c_delta_z"])+1e-6)
 
         return data
     
@@ -66,46 +72,78 @@ class TargetPreprocessor(BaseEstimator, TransformerMixin):
         data = data.copy()
         
         # Reverse log transformation and restore standard deviations
-        data['c_std_y'] = np.exp(data['c_std_y'])
-        data['c_std_z'] = np.expm1(data['c_std_z'])
+        if 'c_std_y' in data.columns:
+            data['c_std_y'] = np.exp(data['c_std_y'])
+            data['c_std_y'] += self.stats[f'c_std_y_min'] - self.near_zero
         
-        for col in ['c_std_y', 'c_std_z']:
-            data[col] += self.stats[f'{col}_min'] - self.near_zero
+        if 'c_std_z' in data.columns:
+            data['c_std_z'] = np.expm1(data['c_std_z'])
+            data['c_std_z'] += self.stats[f'c_std_z_min'] - self.near_zero
         
-        mean_y_sign = np.sign(data["c_delta_y"])
-        data["c_delta_y"] = np.abs(data["c_delta_y"])
-        data["c_delta_y"] = np.expm1(data["c_delta_y"])
-        data["c_delta_y"] *=mean_y_sign
+        if 'c_delta_y' in data.columns:
+            mean_y_sign = np.sign(data["c_delta_y"])
+            data["c_delta_y"] = np.abs(data["c_delta_y"])
+            data["c_delta_y"] = np.expm1(data["c_delta_y"])
+            data["c_delta_y"] *=mean_y_sign
         
-        mean_z_sign = np.sign(data["c_delta_z"])
-        data["c_delta_z"] = np.expm1(np.abs(data["c_delta_z"]))
-        data["c_delta_z"] *=mean_z_sign
-        data["c_delta_z"] = data["c_delta_z"] * self.stats["c_delta_z_std"] + self.stats["c_delta_z_mean"]
+        if 'c_delta_z' in data.columns:
+            mean_z_sign = np.sign(data["c_delta_z"])
+            data["c_delta_z"] = np.expm1(np.abs(data["c_delta_z"]))
+            data["c_delta_z"] *=mean_z_sign
+            data["c_delta_z"] = data["c_delta_z"] * self.stats["c_delta_z_std"] + self.stats["c_delta_z_mean"]
 
         return data
 
+class _Loss(nn.Module):
+    reduction: str
 
-class RMSELoss(nn.Module):
-    def __init__(self):
+    def __init__(self, size_average=None, reduce=None, reduction: str = "mean") -> None:
         super().__init__()
-        self.mse = nn.MSELoss()
+        if size_average is not None or reduce is not None:
+            self.reduction: str = _Reduction.legacy_get_string(size_average, reduce)
+        else:
+            self.reduction = reduction
+
+
+class RMSELoss(_Loss):
+    __constants__ = ["reduction"]
+
+    def __init__(self, size_average=None, reduce=None, reduction: str = "mean") -> None:
+        super().__init__(size_average, reduce, reduction)
+
+    def forward(self, input_: torch.Tensor, target:torch.Tensor) -> torch.Tensor:
+        # return torch.sqrt(F.mse_loss(input, target, reduction=self.reduction, weight = batch_weight))
+        return torch.sqrt(F.mse_loss(input_, target, reduction=self.reduction))
+
+
+class IndexedDataset(Dataset):
+    def __init__(self, X, y, weights=None):
+        self.X = X
+        self.y = y
+        self.weights = weights if weights is not None else torch.ones(len(X))
+        
+    def __len__(self):
+        return len(self.X)
     
-    def forward(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
-        return torch.sqrt(self.mse(y_pred, y_true))
+    def __getitem__(self, idx):
+        return self.X[idx], self.y[idx], self.weights[idx], idx
+
 
 
 class RegressionNet(nn.Module):
     
-    def __init__(self, input_dim: int, hidden1: int = 512, hidden2: int = 256, hidden3: int = 64, output_dim: int = 4):
+    def __init__(self, input_dim: int, hidden1: int = 1024, hidden2: int = 512, hidden3: int = 256, hidden4: int = 64, output_dim: int = 4):
         super().__init__()
         self.model = nn.Sequential(
             nn.Linear(input_dim, hidden1),
-            nn.ReLU(),
+            nn.Mish(),
             nn.Linear(hidden1, hidden2),
-            nn.ReLU(),
+            nn.Mish(),
             nn.Linear(hidden2, hidden3),
-            nn.ReLU(),
-            nn.Linear(hidden3, output_dim)
+            nn.Mish(),
+            nn.Linear(hidden3, hidden4),
+            nn.Mish(),
+            nn.Linear(hidden4, output_dim)
         )
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -113,7 +151,6 @@ class RegressionNet(nn.Module):
 
 
 class DataLoader:
-    
     @staticmethod
     def load_from_folders(base_path: str, feature_filename: str, target_filename: str, 
                           folder_pattern: str = r'output_*\d') -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -128,7 +165,7 @@ class DataLoader:
         if not folder_paths:
             folder_paths = [os.path.join(base_path, "output_28_12_2024")]
         
-        folder_paths = [os.path.join(base_path, "output_19_01_2025_2")]
+        folder_paths = [os.path.join(base_path, "output_19_01_2025_2"), os.path.join(base_path, "output_21_03_2025")]
         X = pd.DataFrame()
         y = pd.DataFrame()
         
@@ -355,10 +392,12 @@ class ModelTrainer:
         assert(torch.cuda.is_available())
         self.device = torch.device('cuda')
         self.model = model.to(self.device)
+        # self.criterion = criterion if criterion else RMSELoss(reduction='sum')
         self.criterion = criterion if criterion else RMSELoss()
+
         
         # Adaptive learning rate with ReduceLROnPlateau
-        self.optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+        self.optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=1e-2)
         self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
             self.optimizer, 
             mode='min', 
@@ -378,6 +417,8 @@ class ModelTrainer:
         self,
         X_train: np.ndarray,
         y_train: pd.DataFrame,
+        sample_weights: np.ndarray,
+        tb_writer: SummaryWriter,
         epochs: int = 100,
         batch_size: int = 256,
         validation_data: Tuple[np.ndarray, pd.DataFrame] = None,
@@ -387,10 +428,14 @@ class ModelTrainer:
         X_train_tensor = torch.FloatTensor(X_train.to_numpy()).to(self.device)
         y_train_tensor = torch.FloatTensor(y_train.to_numpy()).to(self.device)
         
+        # n_samples = len(X_train_tensor)
+        sample_weights = torch.FloatTensor(sample_weights).to(self.device)
         # Create data loader
-        dataset = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
+        dataset = IndexedDataset(X_train_tensor, y_train_tensor, sample_weights)
+        # dataset = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
-        
+        # dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False)
+        # indices = torch.randperm(n_samples)
         # Prepare validation data if provided
         if validation_data:
             X_val, y_val = validation_data
@@ -413,19 +458,71 @@ class ModelTrainer:
             # Training phase
             self.model.train()
             epoch_loss = 0.0
-            
-            for batch_X, batch_y in dataloader:
+
+            for batch_X, batch_y, batch_weights, original_indices in dataloader:
+            # for idx, batch in enumerate(dataloader):
+                # batch_X, batch_y = batch
+                if torch.isnan(batch_X).any().item():
+                    logger.info(f" NaNs in batch_X: {torch.isnan(batch_X).any().item()}")
+                if torch.isnan(batch_y).any().item():
+                    logger.info(f" NaNs in batch_y: {torch.isnan(batch_y).any().item()}")                
+
                 # Forward pass
                 outputs = self.model(batch_X)
+                
+                min_weight = float('inf')
+                max_weight = float('-inf')
+
+                for name, param in self.model.named_parameters():
+                    # Only look at weights, not biases
+                    if 'weight' in name:
+                        # Get min and max for this layer
+                        layer_min = param.data.min().item()
+                        layer_max = param.data.max().item()
+                        
+                        # Update overall min and max
+                        min_weight = min(min_weight, layer_min)
+                        max_weight = max(max_weight, layer_max)
+                
+                # logger.info(f" Min, Max in outputs. Min, Max in weight: {torch.min(outputs).item()}, {torch.max(outputs).item()}; {min_weight}, {max_weight}")
+                
+                if torch.isnan(outputs).any().item():
+                    logger.info(f" NaNs in outputs: {torch.isnan(outputs).any().item()}")
+                    # tb_writer.add_scalar('train_batch_loss', epoch_loss/(idx+1), global_step = epoch*(int(len(dataloader)/batch_size))+idx + 1)
+
+                    # for tag, param in self.model.named_parameters():
+                    #     tb_writer.add_histogram('grad/%s'%tag, param.grad.data.cpu().numpy(), global_step = epoch*(int(len(dataloader)/batch_size))+idx + 1)
+                    #     tb_writer.add_histogram('weight/%s' % tag, param.data.cpu().numpy(), global_step = epoch*(int(len(dataloader)/batch_size))+idx + 1)    
+                    # return 0            
+                # logger.info(f"outputs_dim {outputs.shape}, batch_y_dim {batch_y.shape}")
                 loss = self.criterion(outputs, batch_y)
+                # loss = self.criterion(outputs, batch_y)
+
+                if torch.isnan(loss).any().item():
+                    logger.info(f" NaNs in loss: {torch.isnan(loss).any().item()}")                
+                # loss = loss.mean()
+                # loss = self.criterion(outputs, batch_y)
+
+
+                # weighted_loss = (loss * batch_weights).mean()
                 
                 # Backward pass and optimization
                 self.optimizer.zero_grad()
+                # loss.backward()
                 loss.backward()
+                # torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+                # torch.nn.utils.clip_grad_value_(self.model.parameters(), 0.5)
                 self.optimizer.step()
                 
                 epoch_loss += loss.item()
-            
+
+
+                # if idx % 3 == 0:
+                #     tb_writer.add_scalar('train_batch_loss', epoch_loss/(idx+1), global_step = epoch*(int(len(dataloader)/batch_size))+idx + 1)
+
+                #     for tag, param in self.model.named_parameters():
+                #         tb_writer.add_histogram('grad/%s'%tag, param.grad.data.cpu().numpy(), global_step = epoch*(int(len(dataloader)/batch_size))+idx + 1)
+                #         tb_writer.add_histogram('weight/%s' % tag, param.data.cpu().numpy(), global_step = epoch*(int(len(dataloader)/batch_size))+idx + 1)
             # Calculate average loss for the epoch
             avg_train_loss = epoch_loss / len(dataloader)
             metrics['train_loss'].append(avg_train_loss)
@@ -439,12 +536,12 @@ class ModelTrainer:
                 self.model.eval()
                 with torch.no_grad():
                     val_outputs = self.model(X_val_tensor)
-                    val_loss = self.criterion(val_outputs, y_val_tensor).item()
+                    val_loss = self.criterion(val_outputs, y_val_tensor).mean().item()
                     metrics['val_loss'].append(val_loss)
                 
                 # Adaptive learning rate adjustment
                 self.scheduler.step(val_loss)
-                
+                # tb_writer.add_scalar('val_loss', metrics['val_loss'][-1], global_step=epoch)
                 # Model checkpointing
                 if val_loss < best_val_loss:
                     best_val_loss = val_loss
@@ -490,7 +587,7 @@ class ModelTrainer:
             
             test_outputs = self.model(X_test_tensor)
             
-            rmse_loss = self.criterion(test_outputs, y_test_tensor).item()
+            rmse_loss = self.criterion(test_outputs, y_test_tensor).mean().item()
             
             # Convert predictions to DataFrame
             y_pred = pd.DataFrame(test_outputs.cpu().numpy(), columns=y_test.columns)
@@ -549,6 +646,9 @@ def plot_eda(target: pd.DataFrame, filename: str) -> None:
 
 
 def plot_feature_importance(model, X_test, target_names, feature_names, save_path):
+    sns.set_theme(font = 'serif')
+    sns.set_context("talk")
+
     logger.info("Calculating SHAP values for feature importance...")
     
     # Set model to evaluation mode
@@ -585,6 +685,8 @@ def plot_feature_importance(model, X_test, target_names, feature_names, save_pat
         combined_shap_values = np.mean(shap_values_tmp_abs, axis=0)
         feature_importance = pd.DataFrame(list(zip(feature_names, combined_shap_values)), 
                                       columns=['Feature', 'Importance'])
+        feature_importance_pd = pd.Series(combined_shap_values, feature_names)
+        feature_importance_pd.to_csv('feature_importance_mpl_' + col + '.csv')
         feature_importance.sort_values(by=['Importance'], ascending=False, inplace=True)
         sns.barplot(x='Importance', y='Feature', data=feature_importance, ax=axes[row, col_idx])
         axes[row, col_idx].set_title(f'Feature importance {col}')
@@ -615,21 +717,22 @@ def main():
         'targets_filename': 'target_full.csv',
         'model_params': {
             'input_dim': 9,
-            'hidden1': 512,
-            'hidden2': 256,
-            'hidden3': 64,
-            'output_dim': 4
+            "hidden1": 1024,
+            'hidden2': 512,
+            'hidden3': 256,
+            'hidden4': 64,
+            'output_dim': 1
         },
         'training_params': {
-            'learning_rate': 1e-3,  # Increased from 1e-4
-            'epochs': 100,  # Increased from 50
-            'batch_size': 128,
+            'learning_rate': 1e-5,  # Increased from 1e-4
+            'epochs': 1,  # Increased from 50
+            'batch_size': 6144,
             'early_stopping_patience': 20
         },
-        'output_dir': './outputs_10_03_2025',
-        'model_checkpoints_dir': './model_checkpoints_09_03_2025'
+        'output_dir': './outputs_19_03_2025',
+        'model_checkpoints_dir': './model_checkpoints_29_03_2025'
     }
-    
+    tb_writer = SummaryWriter(log_dir='./outputs_29_03_2025/logs/run003/')
     # Create output directories
     os.makedirs(config['output_dir'], exist_ok=True)
     os.makedirs(config['model_checkpoints_dir'], exist_ok=True)
@@ -655,46 +758,70 @@ def main():
     plot_eda(pd.DataFrame(data["y_test"]), config['output_dir'] + "/target_test_transform.png")
     plot_eda(pd.DataFrame(data["y_train"]), config['output_dir'] + "/target_train_transform.png")
 
-    
-    # Initialize model
-    logger.info("Initializing model...")
-    model = RegressionNet(**config['model_params'])
-    
-    # Initialize trainer with updated configuration
-    trainer = ModelTrainer(
-        model, 
-        learning_rate=config['training_params']['learning_rate'],
-        output_dir=config['model_checkpoints_dir']
-    )
-    
-    # Train model
-    logger.info("Starting training...")
-    metrics = trainer.train(
-        data['X_train'],
-        data['y_train'],
-        epochs=config['training_params']['epochs'],
-        batch_size=config['training_params']['batch_size'],
-        validation_data=(data['X_val'], data['y_val']),
-        early_stopping_patience=config['training_params']['early_stopping_patience']
-    )
-    
-    # Plot and save training history
-    plot_training_history(metrics, save_path=os.path.join(config['output_dir'], 'training_history.png'))
-    
-    # Evaluate model
-    logger.info("Evaluating model...")
-    y_pred, rmse_loss = trainer.evaluate(data['X_test'], data['y_test'])
+
+    y_pred = {}
+    for target in data["y_train"].columns[:1]:
+
+        points = np.linspace(np.min(data["y_train"][target]), np.max(data["y_train"][target]), 201)
+        density, bin_edges = np.histogram(data["y_train"][target], bins=points)
+        bin_indices = np.digitize(data["y_train"][target], bin_edges) - 1    
+        density_answ = []
+        # density = np.log1p(density.astype(float))
+        for i in density:
+            if i !=0:
+                density_answ.append(1.0/i)
+            else:
+                density_answ.append(0)
+        density = np.array(density_answ)
+        bin_indices = np.clip(bin_indices, 0, len(density) - 1)
+        sample_weights = density[bin_indices]
+        # Initialize model
+        logger.info(f"Initializing model for {target}...")
+        model = RegressionNet(**config['model_params'])
+        
+        # Initialize trainer with updated configuration
+        trainer = ModelTrainer(
+            model, 
+            learning_rate=config['training_params']['learning_rate'],
+            output_dir=config['model_checkpoints_dir']
+        )
+        
+        # Train model
+        logger.info("Starting training...")
+        metrics = trainer.train(
+            data['X_train'],
+            # data['y_train'],
+            pd.DataFrame(data=np.array(data['y_train'][target]), columns=[target]),
+            sample_weights= sample_weights,
+            tb_writer=tb_writer,
+            epochs=config['training_params']['epochs'],
+            batch_size=config['training_params']['batch_size'],
+            # validation_data=(data['X_val'], data['y_val']),
+            validation_data=(data['X_val'], pd.DataFrame(data=np.array(data['y_val'][target]), columns=[target])),
+
+            early_stopping_patience=config['training_params']['early_stopping_patience']
+        )
+        
+        # Plot and save training history
+        plot_training_history(metrics, save_path=os.path.join(config['output_dir'], 'training_history.png'))
+        
+        # Evaluate model
+        logger.info(f"Evaluating model for {target}...")
+        # y_pred, rmse_loss = trainer.evaluate(data['X_test'], data['y_test'])
+        y_pred_tmp, rmse_loss = trainer.evaluate(data['X_test'], pd.DataFrame(data=np.array(data['y_test'][target]), columns=[target]))
+        y_pred[target] = y_pred_tmp  
+
     
     plot_eda(pd.DataFrame(y_pred), config['output_dir'] + "/target_pred_transform.png")
 
     y_test_transformed = data['target_preprocessor'].transform(data['y_test'].copy())
 
-    performance_visualizations(y_pred, y_test_transformed, filename_barplot = config['output_dir'] + "/nn_model_hist_transformed.png", 
+    performance_visualizations(y_pred, y_test_transformed,transform=True, filename_barplot = config['output_dir'] + "/nn_model_hist_transformed.png", 
                                                 filename_compare = config['output_dir'] + "/nn_model_transformed.png",
                                                 filename_text = config['output_dir'] + "/metrics_transformed.csv")
 
     # Inverse transform predictions
-    y_pred_original = data['target_preprocessor'].inverse_transform(y_pred)
+    y_pred_original = data['target_preprocessor'].inverse_transform(pd.DataFrame(y_pred))
     plot_eda(pd.DataFrame(y_pred_original), config['output_dir'] + "/target_pred.png")
     
     logger.info(f"Final Test RMSE Loss: {rmse_loss:.4f}")

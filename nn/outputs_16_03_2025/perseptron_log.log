@@ -1,0 +1,95 @@
+2025-03-16 15:21:53,886 - __main__ - INFO - Loading data...
+2025-03-16 15:21:57,291 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-16 15:21:57,291 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:552: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:552: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-16 15:22:00,119 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-16 15:22:00,875 - __main__ - INFO - Training on: cuda
+2025-03-16 15:22:00,875 - __main__ - INFO - Starting training...
+/usr/local/lib/python3.10/dist-packages/torch/nn/modules/loss.py:608: UserWarning: Using a target size (torch.Size([6144])) that is different to the input size (torch.Size([6144, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return F.mse_loss(input, target, reduction=self.reduction)
+/usr/local/lib/python3.10/dist-packages/torch/nn/modules/loss.py:608: UserWarning: Using a target size (torch.Size([6072])) that is different to the input size (torch.Size([6072, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return F.mse_loss(input, target, reduction=self.reduction)
+/usr/local/lib/python3.10/dist-packages/torch/nn/modules/loss.py:608: UserWarning: Using a target size (torch.Size([366729])) that is different to the input size (torch.Size([366729, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return F.mse_loss(input, target, reduction=self.reduction)
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 741, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 678, in main
+    metrics = trainer.train(
+  File "/app/nse/nn/perseptron.py", line 447, in train
+    val_loss = self.criterion(val_outputs, y_val_tensor).item()
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/app/nse/nn/perseptron.py", line 97, in forward
+    return torch.sqrt(self.mse(y_pred, y_true))
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1714, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1725, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/loss.py", line 608, in forward
+    return F.mse_loss(input, target, reduction=self.reduction)
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/functional.py", line 3792, in mse_loss
+    return torch._C._nn.mse_loss(
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 501.02 GiB. GPU 0 has a total capacity of 23.65 GiB of which 23.08 GiB is free. Process 3202179 has 580.00 MiB memory in use. Of the allocated memory 92.31 MiB is allocated by PyTorch, and 23.69 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+2025-03-16 15:29:51,486 - __main__ - INFO - Loading data...
+2025-03-16 15:29:54,872 - __main__ - INFO - Loaded data from /app/nse/ml/output_19_01_2025_2: X shape=(2322432, 10), y shape=(2322432, 4)
+2025-03-16 15:29:54,873 - __main__ - INFO - Preprocessing and splitting data...
+/app/nse/nn/perseptron.py:552: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+/app/nse/nn/perseptron.py:552: UserWarning: To output multiple subplots, the figure containing the passed axes is being cleared.
+  target.hist(bins=50, ax=ax)
+2025-03-16 15:29:57,753 - __main__ - INFO - Initializing model...
+/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:61: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.
+  warnings.warn(
+2025-03-16 15:29:58,722 - __main__ - INFO - Training on: cuda
+2025-03-16 15:29:58,723 - __main__ - INFO - Starting training...
+2025-03-16 15:30:12,947 - __main__ - INFO - Saved best model with validation loss: 2.0677
+2025-03-16 15:30:26,420 - __main__ - INFO - Saved best model with validation loss: 2.0489
+2025-03-16 15:30:40,015 - __main__ - INFO - Saved best model with validation loss: 2.0344
+2025-03-16 15:30:53,977 - __main__ - INFO - Saved best model with validation loss: 2.0225
+2025-03-16 15:31:08,000 - __main__ - INFO - Saved best model with validation loss: 2.0146
+2025-03-16 15:31:22,179 - __main__ - INFO - Saved best model with validation loss: 2.0100
+2025-03-16 15:31:35,549 - __main__ - INFO - Saved best model with validation loss: 2.0076
+2025-03-16 15:31:49,212 - __main__ - INFO - Saved best model with validation loss: 2.0063
+2025-03-16 15:32:02,892 - __main__ - INFO - Saved best model with validation loss: 2.0057
+2025-03-16 15:32:16,292 - __main__ - INFO - Saved best model with validation loss: 2.0055
+2025-03-16 15:32:16,293 - __main__ - INFO - Epoch [10/100], Train Loss: 1.8697, Val Loss: 2.0055, LR: 0.000100
+2025-03-16 15:34:31,037 - __main__ - INFO - Epoch [20/100], Train Loss: 1.8496, Val Loss: 2.0090, LR: 0.000050
+2025-03-16 15:36:45,214 - __main__ - INFO - Early stopping triggered at epoch 30
+2025-03-16 15:36:46,020 - __main__ - INFO - Training history plot saved to ./outputs_16_03_2025/training_history.png
+2025-03-16 15:36:46,020 - __main__ - INFO - Evaluating model...
+2025-03-16 15:36:46,046 - __main__ - INFO - Loaded best model with validation loss: 2.0054666996002197
+(2312849, 11) (2312849, 4)
+Split shapes: train: X(1486776, 11), y(1486776, 4), test: X(459344, 11), y(459344, 4), valid: X(366729, 11), y(366729, 4)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/indexes/base.py", line 3805, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7081, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7089, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'c_delta_z'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/nse/nn/perseptron.py", line 741, in <module>
+    main()
+  File "/app/nse/nn/perseptron.py", line 703, in main
+    performance_visualizations(y_pred, y_test_transformed, filename_barplot = config['output_dir'] + "/nn_model_hist_transformed.png",
+  File "/app/nse/nn/perform_visualization.py", line 119, in performance_visualizations
+    metrics['mse'][target] = [mean_squared_error(y_true, y_pred[target])]
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/frame.py", line 4102, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/usr/local/lib/python3.10/dist-packages/pandas/core/indexes/base.py", line 3812, in get_loc
+    raise KeyError(key) from err
+KeyError: 'c_delta_z'
